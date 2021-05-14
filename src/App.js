@@ -1,4 +1,4 @@
-import React, { Suspense, Fragment, useEffect } from 'react';
+import React, { Suspense, Fragment } from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -26,7 +26,6 @@ import {
 
 // Styles
 import './App.scss';
-import userApi from 'api/userApi';
 
 // Lazy load Components page
 const Photo = React.lazy(
@@ -41,30 +40,6 @@ const User = React.lazy(() => import('./pages/User/User'));
 
 // Main
 function App() {
-  useEffect(() => {
-    const fetchProductList = async () => {
-      try {
-        // const data = {
-        //   name: 'user03',
-        //   email: 'user03@user03.com',
-        //   //username: 'admin',
-        //   password: 'user03',
-        // };
-        //const response = await userApi.register(data);
-        const data = {
-          email: 'user03@user03.com',
-          password: 'user03',
-        };
-        const response = await userApi.login(data);
-        console.log(response);
-      } catch (error) {
-        console.log('Failed to fetch product list: ', error);
-      }
-    };
-
-    fetchProductList();
-  }, []);
-
   const dispatch = useDispatch();
 
   // Handle events
