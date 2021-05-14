@@ -3,12 +3,12 @@ import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Base64 } from 'js-base64';
 
+import { useLogin } from 'hooks/axios/apiUsers';
 import { updateStatusLogin } from 'redux/userSlice';
 import { addLogin, removeLogin } from 'redux/cookieSlice';
 import { showLoading, showModalOk } from 'redux/appSlice';
 import LoginForm from 'pages/User/components/LoginForm';
 import Banner from 'components/Banner';
-import { timeout } from 'utils/helper';
 
 // Constants
 import Images from 'constants/images';
@@ -30,6 +30,7 @@ const LoginPage = (props) => {
 
   const dispatch = useDispatch();
   const history = useHistory();
+  const [apiLogin] = useLogin();
 
   const initialValues = {
     email: '',
@@ -47,48 +48,67 @@ const LoginPage = (props) => {
 
   // Handle events
   const handleSubmit = async (values) => {
+    let isSuccess = false;
+    let message = '';
     dispatch(showLoading(true));
     try {
-      var isSuccess = false;
       const userFound = users.find(
         (user) =>
           user.email === values.email &&
           user.password === Base64.encode(values.password)
       );
       if (userFound) {
-        dispatch(addLogin(userFound));
-        dispatch(updateStatusLogin(true));
-        await timeout(1000);
-        isSuccess = true;
-        // Redirect pages
-        const type = props.location.state?.type;
-        switch (type) {
-          case 'Photo_Remove':
-          case 'Photo_Edit':
-            history.push(PATH_PHOTOS);
-            break;
-          case 'Photo_Add':
-            history.push(PATH_PHOTOS_ADD);
-            break;
-          case 'Category_Remove':
-          case 'Category_Edit':
-            history.push(PATH_CATEGORIES);
-            break;
-          case 'Category_Add':
-            history.push(PATH_CATEGORIES_ADD);
-            break;
-          default:
-            history.push(PATH_HOME);
-            break;
+        // Call API
+        const response = await apiLogin({
+          email: userFound.email,
+          password: userFound.password,
+        });
+
+        // Update state
+        message = response.message;
+        if (response.success) {
+          dispatch(addLogin(userFound));
+          dispatch(updateStatusLogin(true));
+          isSuccess = true;
         }
       }
     } catch (error) {
       console.log(error);
     }
-    if (!isSuccess) {
-      dispatch(showModalOk({ title: NOTIFICATION, content: LOGIN_FAILED }));
-    }
     dispatch(showLoading(false));
+
+    // Handle result
+    if (isSuccess) {
+      // Redirect pages
+      const type = props.location.state?.type;
+      switch (type) {
+        case 'Photo_Remove':
+        case 'Photo_Edit':
+          history.push(PATH_PHOTOS);
+          break;
+        case 'Photo_Add':
+          history.push(PATH_PHOTOS_ADD);
+          break;
+        case 'Category_Remove':
+        case 'Category_Edit':
+          history.push(PATH_CATEGORIES);
+          break;
+        case 'Category_Add':
+          history.push(PATH_CATEGORIES_ADD);
+          break;
+        default:
+          history.push(PATH_HOME);
+          break;
+      }
+    } else {
+      dispatch(
+        // Show dialog
+        showModalOk({
+          title: NOTIFICATION,
+          content: message === '' ? LOGIN_FAILED : message,
+        })
+      );
+    }
   };
 
   return (

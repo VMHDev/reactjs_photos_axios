@@ -1,8 +1,9 @@
+// Set up default config for http requests here
+// Please have a look at here `https://github.com/axios/axios#requestconfig`
 import axios from 'axios';
 import queryString from 'query-string';
 import { API_URL } from 'constants/system';
-// Set up default config for http requests here
-// Please have a look at here `https://github.com/axios/axios#requestconfig`
+
 const axiosClient = axios.create({
   baseURL: API_URL,
   headers: {
