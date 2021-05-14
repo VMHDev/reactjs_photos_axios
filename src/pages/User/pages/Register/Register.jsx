@@ -25,7 +25,7 @@ import './styles.scss';
 const Register = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const [apiRegister, { loading }] = useRegister();
+  const [apiRegister] = useRegister();
 
   const initialValues = {
     id: uuidv4(),
@@ -39,13 +39,13 @@ const Register = (props) => {
   const handleSubmit = async (values) => {
     let isSuccess = false;
     let message = '';
+    dispatch(showLoading(true));
     try {
       let objUser = { ...values };
       delete objUser.confirmPassword;
       objUser.password = Base64.encode(objUser.password);
 
       // Call API
-      dispatch(showLoading(loading));
       const response = await apiRegister({
         name: objUser.name,
         email: objUser.email,
@@ -62,6 +62,8 @@ const Register = (props) => {
     } catch (error) {
       console.log(error);
     }
+    dispatch(showLoading(false));
+
     if (isSuccess) {
       dispatch(
         showModalOk({
