@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Base64 } from 'js-base64';
 
 import { useLogin } from 'hooks/axios/apiUsers';
-import { updateStatusLogin } from 'redux/userSlice';
 import { addLogin, removeLogin } from 'redux/cookieSlice';
 import { showLoading, showModalOk } from 'redux/appSlice';
 import LoginForm from 'pages/User/components/LoginForm';
@@ -40,7 +39,6 @@ const LoginPage = (props) => {
     if (userLogin) {
       //Logout
       dispatch(removeLogin(null));
-      //dispatch(updateStatusLogin(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -63,7 +61,6 @@ const LoginPage = (props) => {
         dispatch(
           addLogin({ user: response.user, token: response.accessToken })
         );
-        dispatch(updateStatusLogin(true));
         isSuccess = true;
       }
     } catch (error) {

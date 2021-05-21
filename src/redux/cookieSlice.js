@@ -12,11 +12,13 @@ import {
 } from 'constants/system';
 
 const initCookies = () => {
+  // Get info user login from cookie
   const objUserLogin = getValueFromCookies(COOKIES_USERLOGIN_NAME)
     ? JSON.parse(getValueFromCookies(COOKIES_USERLOGIN_NAME))
     : null;
 
   if (objUserLogin) {
+    // Decrypt password from cookie
     const decryptPass = decryptWithAESTripleDES(objUserLogin?.password);
     return {
       userLogin: { ...objUserLogin, password: decryptPass },
@@ -42,7 +44,7 @@ const user_cookies = createSlice({
       state.userLogin = action.payload.user;
       state.token = action.payload.token;
 
-      // Hash password
+      // Encrypt password
       const objUserLogin = {
         ...action.payload.user,
         password: encryptWithAESTripleDES(action.payload.user.password),
@@ -57,11 +59,10 @@ const user_cookies = createSlice({
       });
     },
     removeLogin: (state, action) => {
-      state.userLogin = null;
-      state.token = null;
+      state.userLogin = action.payload;
+      state.token = action.payload;
       // Update cookie
-      removeValueFromCookies(COOKIES_USERLOGIN_NAME);
-      removeValueFromCookies(COOKIES_TOKEN_NAME);
+      removeValueFromCookies([COOKIES_USERLOGIN_NAME, COOKIES_TOKEN_NAME]);
     },
   },
 });
