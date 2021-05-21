@@ -19,7 +19,7 @@ const Account = (props) => {
   const history = useHistory();
 
   // Get cookie
-  const userLogin = useSelector((state) => state.cookies.login);
+  const userLogin = useSelector((state) => state.cookies.userLogin);
   useEffect(() => {
     if (!userLogin) {
       history.push(PATH_USER_LOGIN);

@@ -25,8 +25,7 @@ import './styles.scss';
 
 // Main
 const LoginPage = (props) => {
-  const users = useSelector((state) => state.users.data);
-  const userLogin = useSelector((state) => state.cookies.login);
+  const userLogin = useSelector((state) => state.cookies.userLogin);
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -47,30 +46,25 @@ const LoginPage = (props) => {
   }, []);
 
   // Handle events
-  const handleSubmit = async (values) => {
+  const handleSubmitLogin = async (values) => {
     let isSuccess = false;
     let message = '';
     dispatch(showLoading(true));
     try {
-      const userFound = users.find(
-        (user) =>
-          user.email === values.email &&
-          user.password === Base64.encode(values.password)
-      );
-      if (userFound) {
-        // Call API
-        const response = await apiLogin({
-          email: userFound.email,
-          password: userFound.password,
-        });
+      // Call API
+      const response = await apiLogin({
+        email: values.email,
+        password: Base64.encode(values.password),
+      });
 
-        // Update state
-        message = response.message;
-        if (response.success) {
-          dispatch(addLogin(userFound));
-          dispatch(updateStatusLogin(true));
-          isSuccess = true;
-        }
+      // Update state
+      message = response.message;
+      if (response.success) {
+        dispatch(
+          addLogin({ user: response.user, token: response.accessToken })
+        );
+        dispatch(updateStatusLogin(true));
+        isSuccess = true;
       }
     } catch (error) {
       console.log(error);
@@ -116,7 +110,10 @@ const LoginPage = (props) => {
       <div className='login'>
         <Banner title='Login 🎉' backgroundUrl={Images.BRIDGE_BG} />
         <div className='login__form'>
-          <LoginForm initialValues={initialValues} onSubmit={handleSubmit} />
+          <LoginForm
+            initialValues={initialValues}
+            onSubmit={handleSubmitLogin}
+          />
         </div>
       </div>
     </Fragment>

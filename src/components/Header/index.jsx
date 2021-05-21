@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import {
@@ -31,17 +30,8 @@ import './styles.scss';
 
 const Header = (props) => {
   const { onLogoutClick } = props;
-  const history = useHistory();
 
-  const userLogin = useSelector((state) => state.cookies.login);
-  const isTimeout = useSelector((state) => state.cookies.isTimeout);
-  const isLogin = useSelector((state) => state.users.isLogin);
-  useEffect(() => {
-    if (!userLogin && isLogin && isTimeout) {
-      console.log('Session timeout');
-      history.push(PATH_USER_LOGIN);
-    }
-  }, [userLogin, isLogin, isTimeout, history]);
+  const userLogin = useSelector((state) => state.cookies.userLogin);
 
   // Render GUI
   const [isOpen, setIsOpen] = useState(false);

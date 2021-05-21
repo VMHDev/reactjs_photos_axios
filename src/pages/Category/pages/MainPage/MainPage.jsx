@@ -31,7 +31,7 @@ const MainPage = (props) => {
   const [categorySelected, setCategorySelected] = useState(null);
 
   // Get cookie
-  const userLogin = useSelector((state) => state.cookies.login);
+  const userLogin = useSelector((state) => state.cookies.userLogin);
 
   // Hander Events
   const handleCategoryEditClick = (category) => {
