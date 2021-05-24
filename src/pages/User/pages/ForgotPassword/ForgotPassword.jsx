@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 import cryptoRandomString from 'crypto-random-string';
 
+import { useGetByEmail } from 'hooks/axios/apiUsers';
 import { addToken } from 'redux/userTokenSlice';
 import ForgotPasswordForm from 'pages/User/components/ForgotPasswordForm';
 import Banner from 'components/Banner';
@@ -18,7 +19,6 @@ import { PATH_USER_RESETPASSWORD } from 'constants/route';
 import './styles.scss';
 
 const ForgotPassword = (props) => {
-  const users = useSelector((state) => state.users.data);
   const dispatch = useDispatch();
 
   const initialValues = {
@@ -41,10 +41,15 @@ const ForgotPassword = (props) => {
   };
 
   // Handle events
-  const handleSubmit = (values) => {
+  const [apiGetByEmail] = useGetByEmail();
+  const handleSubmit = async (values) => {
     try {
       setEmail(values.email);
-      const userFound = users.find((user) => user.email === values.email);
+      const response = await apiGetByEmail(values.email);
+      if (!response.success) {
+        return;
+      }
+      const userFound = response.user;
       if (userFound) {
         const sToken = generateToken(userFound._id);
         const objToken = {

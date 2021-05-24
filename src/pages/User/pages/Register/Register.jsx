@@ -6,7 +6,6 @@ import { Base64 } from 'js-base64';
 
 import { useRegister } from 'hooks/axios/apiUsers';
 import { showLoading, showModalOk } from 'redux/appSlice';
-import { addUser } from 'redux/userSlice';
 import RegisterForm from 'pages/User/components/RegisterForm';
 import Banner from 'components/Banner';
 
@@ -55,8 +54,6 @@ const Register = (props) => {
       // Update state
       message = response.message;
       if (response.success) {
-        const action = addUser(objUser);
-        dispatch(action);
         isSuccess = true;
       }
     } catch (error) {

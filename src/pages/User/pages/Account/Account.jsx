@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Base64 } from 'js-base64';
 
-import { updateUser } from 'redux/userSlice';
 import RegisterForm from 'pages/User/components/RegisterForm';
 import Banner from 'components/Banner';
 
@@ -15,7 +14,6 @@ import { PATH_USER_LOGIN } from 'constants/route';
 import './styles.scss';
 
 const Account = (props) => {
-  const dispatch = useDispatch();
   const history = useHistory();
 
   // Get cookie
@@ -41,8 +39,8 @@ const Account = (props) => {
       let objUser = { ...values };
       delete objUser.confirmPassword;
       objUser.password = Base64.encode(objUser.password);
-      const actionUpdate = updateUser(objUser);
-      dispatch(actionUpdate);
+      // const actionUpdate = updateUser(objUser);
+      // dispatch(actionUpdate);
       // Redirect
       history.push(PATH_USER_LOGIN);
     } catch (error) {
