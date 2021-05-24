@@ -38,12 +38,17 @@
 - Hash:
   - js-base64
     > https://www.npmjs.com/package/js-base64
+  - crypto-js
+    > https://www.npmjs.com/package/crypto-js
 - Generate ID: uuid
   > https://www.npmjs.com/package/uuid
 - Random token: crypto-random-string
   > https://www.npmjs.com/package/crypto-random-string
-- Cookie: universal-cookie
-  > https://www.npmjs.com/package/universal-cookie
+- Cookie: 
+  - universal-cookie (Don't use)
+    > https://www.npmjs.com/package/universal-cookie
+  - js-cookie
+    > https://www.npmjs.com/package/js-cookie
 - Handle direct: react-router-dom
   > https://reactrouter.com/
 - Handle state: react-redux

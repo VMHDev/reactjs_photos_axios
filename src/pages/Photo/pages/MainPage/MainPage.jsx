@@ -27,7 +27,7 @@ const MainPage = (props) => {
   const [photoSelected, setPhotoSelected] = useState(null);
 
   // Get cookie
-  const userLogin = useSelector((state) => state.cookies.login);
+  const userLogin = useSelector((state) => state.cookies.userLogin);
 
   // Hander Events
   const handlePhotoEditClick = (photo) => {

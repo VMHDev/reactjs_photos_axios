@@ -3,12 +3,11 @@ import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Base64 } from 'js-base64';
 
-import { updateStatusLogin } from 'redux/userSlice';
+import { useLogin } from 'hooks/axios/apiUsers';
 import { addLogin, removeLogin } from 'redux/cookieSlice';
 import { showLoading, showModalOk } from 'redux/appSlice';
 import LoginForm from 'pages/User/components/LoginForm';
 import Banner from 'components/Banner';
-import { timeout } from 'utils/helper';
 
 // Constants
 import Images from 'constants/images';
@@ -25,11 +24,11 @@ import './styles.scss';
 
 // Main
 const LoginPage = (props) => {
-  const users = useSelector((state) => state.users.data);
-  const userLogin = useSelector((state) => state.cookies.login);
+  const userLogin = useSelector((state) => state.cookies.userLogin);
 
   const dispatch = useDispatch();
   const history = useHistory();
+  const [apiLogin] = useLogin();
 
   const initialValues = {
     email: '',
@@ -40,55 +39,67 @@ const LoginPage = (props) => {
     if (userLogin) {
       //Logout
       dispatch(removeLogin(null));
-      //dispatch(updateStatusLogin(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Handle events
-  const handleSubmit = async (values) => {
+  const handleSubmitLogin = async (values) => {
+    let isSuccess = false;
+    let message = '';
     dispatch(showLoading(true));
     try {
-      var isSuccess = false;
-      const userFound = users.find(
-        (user) =>
-          user.email === values.email &&
-          user.password === Base64.encode(values.password)
-      );
-      if (userFound) {
-        dispatch(addLogin(userFound));
-        dispatch(updateStatusLogin(true));
-        await timeout(1000);
+      // Call API
+      const response = await apiLogin({
+        email: values.email,
+        password: Base64.encode(values.password),
+      });
+
+      // Update state
+      message = response.message;
+      if (response.success) {
+        dispatch(
+          addLogin({ user: response.user, token: response.accessToken })
+        );
         isSuccess = true;
-        // Redirect pages
-        const type = props.location.state?.type;
-        switch (type) {
-          case 'Photo_Remove':
-          case 'Photo_Edit':
-            history.push(PATH_PHOTOS);
-            break;
-          case 'Photo_Add':
-            history.push(PATH_PHOTOS_ADD);
-            break;
-          case 'Category_Remove':
-          case 'Category_Edit':
-            history.push(PATH_CATEGORIES);
-            break;
-          case 'Category_Add':
-            history.push(PATH_CATEGORIES_ADD);
-            break;
-          default:
-            history.push(PATH_HOME);
-            break;
-        }
       }
     } catch (error) {
       console.log(error);
     }
-    if (!isSuccess) {
-      dispatch(showModalOk({ title: NOTIFICATION, content: LOGIN_FAILED }));
-    }
     dispatch(showLoading(false));
+
+    // Handle result
+    if (isSuccess) {
+      // Redirect pages
+      const type = props.location.state?.type;
+      switch (type) {
+        case 'Photo_Remove':
+        case 'Photo_Edit':
+          history.push(PATH_PHOTOS);
+          break;
+        case 'Photo_Add':
+          history.push(PATH_PHOTOS_ADD);
+          break;
+        case 'Category_Remove':
+        case 'Category_Edit':
+          history.push(PATH_CATEGORIES);
+          break;
+        case 'Category_Add':
+          history.push(PATH_CATEGORIES_ADD);
+          break;
+        default:
+          history.push(PATH_HOME);
+          break;
+      }
+    } else {
+      dispatch(
+        // Show dialog
+        showModalOk({
+          title: NOTIFICATION,
+          content: message === '' ? LOGIN_FAILED : message,
+        })
+      );
+    }
   };
 
   return (
@@ -96,7 +107,10 @@ const LoginPage = (props) => {
       <div className='login'>
         <Banner title='Login 🎉' backgroundUrl={Images.BRIDGE_BG} />
         <div className='login__form'>
-          <LoginForm initialValues={initialValues} onSubmit={handleSubmit} />
+          <LoginForm
+            initialValues={initialValues}
+            onSubmit={handleSubmitLogin}
+          />
         </div>
       </div>
     </Fragment>
