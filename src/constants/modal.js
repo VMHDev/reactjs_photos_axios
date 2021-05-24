@@ -8,3 +8,5 @@ export const DELETE_CONFIRM = 'Are you sure you want to delete this item?';
 export const LOGIN_FAILED = 'Login failed';
 export const REGISTER_SUCCESS = 'Register success';
 export const REGISTER_FAILED = 'Register failed';
+export const UPDATE_SUCCESS = 'Update success';
+export const UPDATE_FAILED = 'Update failed';

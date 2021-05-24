@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { showLoading } from 'redux/appSlice';
-import { addCategory, updateCategory } from 'redux/categorySlice';
 import { useHistory, useParams } from 'react-router-dom';
 
 import Banner from 'components/Banner';
 import CategoryForm from 'pages/Category/components/CategoryForm';
+
+import { showLoading, showModalOk } from 'redux/appSlice';
+import { addCategory } from 'redux/categorySlice';
 import { timeout } from 'utils/helper';
+import { useCategoryUpdate } from 'hooks/axios/apiCategories';
 
 import { PATH_CATEGORIES } from 'constants/route';
+import { NOTIFICATION, UPDATE_FAILED } from 'constants/modal';
 
 import './styles.scss';
 
@@ -19,8 +22,8 @@ const AddEditPage = (props) => {
   const isAddMode = categoryId === 'add' || !categoryId ? true : false;
 
   const editedCategory = useSelector((state) => {
-    const foundCategory = state.categories.find(
-      (x) => x.id.toString() === categoryId
+    const foundCategory = state.categories.data.find(
+      (x) => x._id.toString() === categoryId
     );
     return foundCategory;
   });
@@ -28,33 +31,55 @@ const AddEditPage = (props) => {
   const maxCategories = useSelector((state) => {
     let max = Math.max.apply(
       Math,
-      state.categories.map((object) => object.id)
+      state.categories.data.map((object) => object._id)
     );
     return max;
   });
 
   const initialValues = isAddMode
     ? {
-        id: maxCategories + 1,
+        _id: maxCategories + 1,
         name: '',
       }
     : editedCategory;
 
+  // Redirect when missing state
+  useEffect(() => {
+    if (!editedCategory) {
+      history.push(PATH_CATEGORIES);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editedCategory]);
+
+  // Handle events
+  const [apiCategoryUpdate] = useCategoryUpdate();
+
   const handleSubmit = async (values) => {
     dispatch(showLoading(true));
+    let response = null;
     try {
       if (isAddMode) {
         const action = addCategory(values);
         dispatch(action);
         await timeout(1000);
       } else {
-        const action = updateCategory(values);
-        dispatch(action);
-        await timeout(1000);
+        // Call Api
+        response = await apiCategoryUpdate(values);
       }
-      history.push(PATH_CATEGORIES);
     } catch (error) {
       console.log(error);
+    }
+
+    // Handle response
+    if (response?.success) {
+      history.push(PATH_CATEGORIES);
+    } else {
+      dispatch(
+        showModalOk({
+          title: NOTIFICATION,
+          content: response?.message ? response?.message : UPDATE_FAILED,
+        })
+      );
     }
     dispatch(showLoading(false));
   };

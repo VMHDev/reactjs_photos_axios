@@ -53,7 +53,7 @@ const MainPage = (props) => {
   // Hander Events
   const handleCategoryEditClick = (category) => {
     if (userLogin) {
-      history.push(PATH_CATEGORIES + category.id);
+      history.push(PATH_CATEGORIES + category._id);
     } else {
       history.push({
         pathname: PATH_USER_LOGIN,
@@ -82,7 +82,7 @@ const MainPage = (props) => {
   // Modal
   const handleClickYes = () => {
     try {
-      const removePhotoId = categorySelected.id;
+      const removePhotoId = categorySelected._id;
       const action = removeCategory(removePhotoId);
       dispatch(action);
       // Close modal

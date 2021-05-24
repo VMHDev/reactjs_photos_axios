@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux';
-import { setCategory } from 'redux/categorySlice';
 import { trackPromise } from 'react-promise-tracker';
+
+import { setCategory, updateCategory } from 'redux/categorySlice';
 import categoryApi from 'api/categoryApi';
 import { timeout } from 'utils/helper';
 
@@ -12,10 +13,12 @@ export const useCategoryGetAll = () => {
       // Call api
       const response = await trackPromise(categoryApi.getAll());
       // Update state
-      const data = response?.data.categories ? response?.data.categories : [];
-      dispatch(setCategory(data));
-      await trackPromise(timeout(1000));
+      if (response?.data.success) {
+        const data = response?.data.categories ? response?.data.categories : [];
+        dispatch(setCategory(data));
+      }
 
+      await trackPromise(timeout(1000));
       return response?.data;
     } catch (error) {
       return error.response.data
@@ -43,9 +46,19 @@ export const useCategoryAdd = () => {
 };
 
 export const useCategoryUpdate = () => {
+  const dispatch = useDispatch();
   const callback = async (params) => {
     try {
+      console.log('params', params);
+      // Call api
       const response = await trackPromise(categoryApi.update(params));
+      console.log('response', response);
+      // Update state
+      if (response?.data.success) {
+        const action = updateCategory(params);
+        dispatch(action);
+      }
+
       await trackPromise(timeout(1000));
       return response?.data;
     } catch (error) {

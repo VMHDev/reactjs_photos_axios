@@ -16,13 +16,13 @@ const category = createSlice({
     removeCategory: (state, action) => {
       const removeCategoryId = action.payload;
       state.data = state.data.filter(
-        (category) => category.id !== removeCategoryId
+        (category) => category._id !== removeCategoryId
       );
       return state;
     },
     updateCategory: (state, action) => {
       const udpCategory = action.payload;
-      const categoryIndex = state.findIndex(
+      const categoryIndex = state.data.findIndex(
         (category) => category._id === udpCategory._id
       );
       if (categoryIndex >= 0) {
