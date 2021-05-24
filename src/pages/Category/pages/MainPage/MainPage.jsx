@@ -7,9 +7,11 @@ import { BsPlusSquareFill } from 'react-icons/bs';
 import Banner from 'components/Banner';
 import ModalYesNoCancel from 'components/Modal/ModalYesNoCancel';
 import CategoryTable from 'pages/Category/components/CategoryTable';
-import { removeCategory } from 'redux/categorySlice';
 import { showModalOk, showModalYesNoCancel } from 'redux/appSlice';
-import { useCategoryGetAll } from 'hooks/axios/apiCategories';
+import {
+  useCategoryGetAll,
+  useCategoryDelete,
+} from 'hooks/axios/apiCategories';
 
 import {
   PATH_CATEGORIES,
@@ -28,6 +30,8 @@ const MainPage = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
 
+  const categoriesState = useSelector((state) => state.categories.data);
+  const [categories, setCategories] = useState(categoriesState);
   const [categorySelected, setCategorySelected] = useState(null);
 
   // Get cookie
@@ -35,7 +39,6 @@ const MainPage = (props) => {
 
   // Get all category
   const [apiCategoryGetAll] = useCategoryGetAll();
-  const [categories, setCategories] = useState([]);
   useEffect(() => {
     const callApi = async () => {
       // Call API
@@ -45,9 +48,13 @@ const MainPage = (props) => {
         setCategories(data);
       }
     };
-    callApi();
+    if (categoriesState.length === 0) {
+      callApi();
+    } else {
+      setCategories(categoriesState);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [categoriesState]);
 
   // Hander Events
   const handleCategoryEditClick = (category) => {
@@ -79,17 +86,26 @@ const MainPage = (props) => {
   };
 
   // Modal
-  const handleClickYes = () => {
+  const [apiCategoryDelete] = useCategoryDelete();
+  const handleClickYes = async () => {
     try {
-      const removePhotoId = categorySelected._id;
-      const action = removeCategory(removePhotoId);
-      dispatch(action);
-      // Close modal
-      dispatch(showModalYesNoCancel({ title: '', content: '' }));
+      // Call API
+      const response = await apiCategoryDelete(categorySelected._id);
+      if (!response.success) {
+        // Close dialog
+        dispatch(
+          showModalOk({
+            title: NOTIFICATION,
+            content: response.message ? response.message : DELETE_FAILED,
+          })
+        );
+      }
     } catch (error) {
       dispatch(showModalOk({ title: NOTIFICATION, content: DELETE_FAILED }));
       console.log(error);
     }
+    // Close modal
+    dispatch(showModalYesNoCancel({ title: '', content: '' }));
   };
 
   const handleClickNo = () => {

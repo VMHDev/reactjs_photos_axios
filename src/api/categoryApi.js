@@ -13,7 +13,7 @@ const categoryApi = {
     return axiosClient.put(url, data);
   },
   delete: (data) => {
-    const url = `/category/${data._id}`;
+    const url = `/category/${data}`;
     return axiosClient.delete(url);
   },
 };
