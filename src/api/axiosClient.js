@@ -3,6 +3,7 @@
 import axios from 'axios';
 import queryString from 'query-string';
 import { API_URL } from 'constants/system';
+import store from 'redux/store';
 
 const axiosClient = axios.create({
   baseURL: API_URL,
@@ -12,7 +13,10 @@ const axiosClient = axios.create({
   paramsSerializer: (params) => queryString.stringify(params),
 });
 axiosClient.interceptors.request.use(async (config) => {
-  // Handle token here ...
+  const token = store.getState().cookies?.token;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   return config;
 });
 axiosClient.interceptors.response.use(

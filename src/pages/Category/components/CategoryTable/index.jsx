@@ -12,7 +12,7 @@ const CategoryTable = (props) => {
   // Init Structe table
   const columns = [
     {
-      dataField: 'id',
+      dataField: '_id',
       text: 'Category ID',
     },
     {
@@ -69,7 +69,7 @@ const CategoryTable = (props) => {
       <BootstrapTable
         headerWrapperClasses='text-center'
         bodyClasses='text-left'
-        keyField='id'
+        keyField='_id'
         data={categoryList}
         columns={columns}
         pagination={paginationFactory(options)}

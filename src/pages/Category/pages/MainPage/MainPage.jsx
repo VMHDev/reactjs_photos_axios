@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Tooltip } from 'reactstrap';
 import { Link, useHistory } from 'react-router-dom';
@@ -9,6 +9,7 @@ import ModalYesNoCancel from 'components/Modal/ModalYesNoCancel';
 import CategoryTable from 'pages/Category/components/CategoryTable';
 import { removeCategory } from 'redux/categorySlice';
 import { showModalOk, showModalYesNoCancel } from 'redux/appSlice';
+import { useCategoryGetAll } from 'hooks/axios/apiCategories';
 
 import {
   PATH_CATEGORIES,
@@ -24,7 +25,6 @@ import {
 import Images from 'constants/images';
 
 const MainPage = (props) => {
-  const categories = useSelector((state) => state.categories);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -32,6 +32,23 @@ const MainPage = (props) => {
 
   // Get cookie
   const userLogin = useSelector((state) => state.cookies.userLogin);
+
+  // Get all category
+  const [apiCategoryGetAll] = useCategoryGetAll();
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    const callApi = async () => {
+      // Call API
+      const response = await apiCategoryGetAll();
+      console.log('response', response);
+      if (response.success) {
+        const data = response.categories ? response.categories : [];
+        setCategories(data);
+      }
+    };
+    callApi();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Hander Events
   const handleCategoryEditClick = (category) => {
