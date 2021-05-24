@@ -32,7 +32,7 @@ const ResetPassword = (props) => {
     const tokenFound = tokens.find((item) => item.token === token);
     if (tokenFound) {
       // Get info user
-      const userFound = users.find((item) => item.id === tokenFound.user_id);
+      const userFound = users.find((item) => item._id === tokenFound.user_id);
       setUser(userFound);
 
       // Check token expire

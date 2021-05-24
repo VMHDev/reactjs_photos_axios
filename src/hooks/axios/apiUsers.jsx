@@ -8,8 +8,10 @@ export const useLogin = () => {
       const response = await trackPromise(userApi.login(params));
       await trackPromise(timeout(1000));
       return response?.data;
-    } catch (e) {
-      return '';
+    } catch (error) {
+      return error.response.data
+        ? error.response.data
+        : { success: false, message: 'Server error' };
     }
   };
   return [callback];
@@ -21,8 +23,10 @@ export const useRegister = () => {
       const response = await trackPromise(userApi.register(params));
       await trackPromise(timeout(1000));
       return response?.data;
-    } catch (e) {
-      return '';
+    } catch (error) {
+      return error.response.data
+        ? error.response.data
+        : { success: false, message: 'Server error' };
     }
   };
 

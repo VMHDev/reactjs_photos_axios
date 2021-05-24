@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Tooltip } from 'reactstrap';
 import { Link, useHistory } from 'react-router-dom';
@@ -7,8 +7,11 @@ import { BsPlusSquareFill } from 'react-icons/bs';
 import Banner from 'components/Banner';
 import ModalYesNoCancel from 'components/Modal/ModalYesNoCancel';
 import CategoryTable from 'pages/Category/components/CategoryTable';
-import { removeCategory } from 'redux/categorySlice';
 import { showModalOk, showModalYesNoCancel } from 'redux/appSlice';
+import {
+  useCategoryGetAll,
+  useCategoryDelete,
+} from 'hooks/axios/apiCategories';
 
 import {
   PATH_CATEGORIES,
@@ -24,19 +27,39 @@ import {
 import Images from 'constants/images';
 
 const MainPage = (props) => {
-  const categories = useSelector((state) => state.categories);
   const history = useHistory();
   const dispatch = useDispatch();
 
+  const categoriesState = useSelector((state) => state.categories.data);
+  const [categories, setCategories] = useState(categoriesState);
   const [categorySelected, setCategorySelected] = useState(null);
 
   // Get cookie
   const userLogin = useSelector((state) => state.cookies.userLogin);
 
+  // Get all category
+  const [apiCategoryGetAll] = useCategoryGetAll();
+  useEffect(() => {
+    const callApi = async () => {
+      // Call API
+      const response = await apiCategoryGetAll();
+      if (response.success) {
+        const data = response.categories ? response.categories : [];
+        setCategories(data);
+      }
+    };
+    if (categoriesState.length === 0) {
+      callApi();
+    } else {
+      setCategories(categoriesState);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categoriesState]);
+
   // Hander Events
   const handleCategoryEditClick = (category) => {
     if (userLogin) {
-      history.push(PATH_CATEGORIES + category.id);
+      history.push(PATH_CATEGORIES + category._id);
     } else {
       history.push({
         pathname: PATH_USER_LOGIN,
@@ -63,17 +86,26 @@ const MainPage = (props) => {
   };
 
   // Modal
-  const handleClickYes = () => {
+  const [apiCategoryDelete] = useCategoryDelete();
+  const handleClickYes = async () => {
     try {
-      const removePhotoId = categorySelected.id;
-      const action = removeCategory(removePhotoId);
-      dispatch(action);
-      // Close modal
-      dispatch(showModalYesNoCancel({ title: '', content: '' }));
+      // Call API
+      const response = await apiCategoryDelete(categorySelected._id);
+      if (!response.success) {
+        // Close dialog
+        dispatch(
+          showModalOk({
+            title: NOTIFICATION,
+            content: response.message ? response.message : DELETE_FAILED,
+          })
+        );
+      }
     } catch (error) {
       dispatch(showModalOk({ title: NOTIFICATION, content: DELETE_FAILED }));
       console.log(error);
     }
+    // Close modal
+    dispatch(showModalYesNoCancel({ title: '', content: '' }));
   };
 
   const handleClickNo = () => {

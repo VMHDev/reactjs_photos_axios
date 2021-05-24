@@ -46,10 +46,10 @@ const ForgotPassword = (props) => {
       setEmail(values.email);
       const userFound = users.find((user) => user.email === values.email);
       if (userFound) {
-        const sToken = generateToken(userFound.id);
+        const sToken = generateToken(userFound._id);
         const objToken = {
           id: uuidv4(),
-          user_id: userFound.id,
+          user_id: userFound._id,
           token: sToken,
           delete_flg: false,
           registered_date: moment().format('YYYY-MM-DD HH:mm:ss'),
