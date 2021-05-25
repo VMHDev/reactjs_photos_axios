@@ -1,3 +1,4 @@
+// Độ dài của token reset password
 export const PASSWORD_RESET_TOKEN_LENGTH = parseInt(
   process.env.REACT_APP_PASSWORD_RESET_TOKEN_LENGTH
 );
