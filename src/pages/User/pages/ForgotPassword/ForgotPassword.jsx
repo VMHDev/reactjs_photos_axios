@@ -32,7 +32,7 @@ const ForgotPassword = (props) => {
   const generateToken = (userId) => {
     const randomString = cryptoRandomString({
       length: PASSWORD_RESET_TOKEN_LENGTH,
-      type: 'base64',
+      type: 'alphanumeric',
     });
     const sToken = userId + '-' + randomString;
     setToken(sToken);
@@ -58,7 +58,6 @@ const ForgotPassword = (props) => {
           token: sToken,
         };
         const response = await apiAddTokenPassword(objToken);
-        console.log('response', response);
         const message = response.message;
         if (response.success) {
           setFogotPassword(1);

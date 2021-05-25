@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { Base64 } from 'js-base64';
 import moment from 'moment';
+import momenttimezone from 'moment-timezone';
 
 import { useGetById } from 'hooks/axios/apiUsers';
+import { useGetTokenPassword } from 'hooks/axios/apiAuth';
+import { showLoading } from 'redux/appSlice';
+
 import ResetPasswordForm from 'pages/User/components/ResetPasswordForm';
 import Banner from 'components/Banner';
 import NotFound from 'components/NotFound';
@@ -12,47 +16,57 @@ import NotFound from 'components/NotFound';
 // Constants
 import Images from 'constants/images';
 import { PATH_USER_LOGIN } from 'constants/route';
-import { PASSWORD_TOKEN_EXPIRE } from 'constants/system';
+import { PASSWORD_RESET_TOKEN_EXPIRE } from 'constants/system';
 
 // Styles
 import './styles.scss';
 
 const ResetPassword = (props) => {
-  const tokens = useSelector((state) => state.user_tokens);
-
+  const dispatch = useDispatch();
   const history = useHistory();
   const { token } = useParams();
 
-  const [isTokenValid, setIsTokenValid] = useState(true);
+  const [isTokenValid, setIsTokenValid] = useState(0);
   const [user, setUser] = useState({});
 
   const [apiGetById] = useGetById();
+  const [apiGetTokenPassword] = useGetTokenPassword();
   useEffect(() => {
     const checkToken = async () => {
+      dispatch(showLoading(true));
       // Check token valid
-      const tokenFound = tokens.find((item) => item.token === token);
+      const responseToken = await apiGetTokenPassword(token);
+      if (!responseToken.success) {
+        setIsTokenValid(-1);
+        return;
+      }
+      const tokenFound = responseToken.token_info;
       if (tokenFound) {
         // Get info user
-        const response = await apiGetById(tokenFound.user_id);
-        if (!response.success) {
+        const responseUser = await apiGetById(tokenFound.user_id);
+        if (!responseUser.success) {
+          setIsTokenValid(-1);
           return;
         }
-        const userFound = response.user;
+        const userFound = responseUser.user;
         setUser(userFound);
 
         // Check token expire
-        const dateRegister = moment(
-          tokenFound.registered_date,
-          'YYYY-MM-DD HH:mm:ss'
-        )
-          .add(PASSWORD_TOKEN_EXPIRE, 'm')
-          .toDate();
-        if (dateRegister < Date.now()) {
-          setIsTokenValid(false);
+        let dateRegister = moment(tokenFound.registered_date).add(
+          PASSWORD_RESET_TOKEN_EXPIRE,
+          'm'
+        );
+        dateRegister = momenttimezone.tz(dateRegister, 'Etc/GMT+7').toDate();
+        const dataNow = momenttimezone.tz(Date.now(), 'Etc/GMT+7').toDate();
+        if (dateRegister < dataNow) {
+          setIsTokenValid(-1);
+        } else {
+          setIsTokenValid(1);
         }
       } else {
-        setIsTokenValid(false);
+        setIsTokenValid(-1);
       }
+      dispatch(showLoading(false));
     };
 
     checkToken();
@@ -79,7 +93,7 @@ const ResetPassword = (props) => {
     }
   };
 
-  return isTokenValid ? (
+  return isTokenValid === 1 ? (
     <div className='reset-password'>
       <Banner title='Reset Password 🔥' backgroundUrl={Images.BRIDGE2_BG} />
       <div className='reset-password__form'>
@@ -89,8 +103,10 @@ const ResetPassword = (props) => {
         />
       </div>
     </div>
-  ) : (
+  ) : isTokenValid === -1 ? (
     <NotFound />
+  ) : (
+    <></>
   );
 };
 
