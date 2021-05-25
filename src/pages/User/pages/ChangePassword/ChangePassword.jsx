@@ -7,7 +7,7 @@ import { useLogin } from 'hooks/axios/apiAuth';
 import { useUserUpdate } from 'hooks/axios/apiUsers';
 import { showLoading } from 'redux/appSlice';
 
-import ResetPasswordForm from 'pages/User/components/ResetPasswordForm';
+import ConfirmPasswordForm from 'pages/User/components/ConfirmPasswordForm';
 import PasswordForm from 'pages/User/components/PasswordForm';
 import Banner from 'components/Banner';
 import useShowOk from 'hooks/modal/useShowOk';
@@ -98,7 +98,7 @@ const ChangePassword = (props) => {
       <Banner title='Change Password 🔥' backgroundUrl={Images.BRIDGE2_BG} />
       <div className='change-password__form'>
         {isValidCurrentPassword ? (
-          <ResetPasswordForm
+          <ConfirmPasswordForm
             initialValues={initPasswordConfirm}
             onSubmit={handleSubmitStep2}
             typePage='change-password'

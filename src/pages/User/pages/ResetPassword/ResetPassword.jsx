@@ -9,7 +9,7 @@ import { useGetById, useUserUpdate } from 'hooks/axios/apiUsers';
 import { useGetTokenPassword } from 'hooks/axios/apiAuth';
 import { showLoading } from 'redux/appSlice';
 
-import ResetPasswordForm from 'pages/User/components/ResetPasswordForm';
+import ConfirmPasswordForm from 'pages/User/components/ConfirmPasswordForm';
 import Banner from 'components/Banner';
 import NotFound from 'components/NotFound';
 import useShowOk from 'hooks/modal/useShowOk';
@@ -106,7 +106,7 @@ const ResetPassword = (props) => {
     <div className='reset-password'>
       <Banner title='Reset Password 🔥' backgroundUrl={Images.BRIDGE2_BG} />
       <div className='reset-password__form'>
-        <ResetPasswordForm
+        <ConfirmPasswordForm
           initialValues={initialValues}
           onSubmit={handleSubmit}
         />

@@ -5,7 +5,7 @@ import cryptoRandomString from 'crypto-random-string';
 
 import { useGetByEmail } from 'hooks/axios/apiUsers';
 import { useAddTokenPassword } from 'hooks/axios/apiAuth';
-import ForgotPasswordForm from 'pages/User/components/ForgotPasswordForm';
+import EmailForm from 'pages/User/components/EmailForm';
 import Banner from 'components/Banner';
 import { showLoading } from 'redux/appSlice';
 import useShowOk from 'hooks/modal/useShowOk';
@@ -82,10 +82,7 @@ const ForgotPassword = (props) => {
     <div className='forgot-password'>
       <Banner title='Forgot Password 🔥' backgroundUrl={Images.BRIDGE2_BG} />
       <div className='forgot-password__form'>
-        <ForgotPasswordForm
-          initialValues={initialValues}
-          onSubmit={handleSubmit}
-        />
+        <EmailForm initialValues={initialValues} onSubmit={handleSubmit} />
         {fogotPassword === 1 ? (
           <>
             <span>Step next click link: </span>
