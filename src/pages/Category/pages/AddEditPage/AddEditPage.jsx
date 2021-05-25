@@ -5,15 +5,19 @@ import { useHistory, useParams } from 'react-router-dom';
 import Banner from 'components/Banner';
 import CategoryForm from 'pages/Category/components/CategoryForm';
 
-import { showLoading, showModalOk } from 'redux/appSlice';
+import { showLoading } from 'redux/appSlice';
 import { useCategoryAdd, useCategoryUpdate } from 'hooks/axios/apiCategories';
+import useShowOk from 'hooks/modal/useShowOk';
 
+// Constants
 import { PATH_CATEGORIES } from 'constants/route';
-import { NOTIFICATION, UPDATE_FAILED } from 'constants/modal';
+import { NOTIFICATION, UPDATE_FAILED, ERROR_GENERAL } from 'constants/modal';
 
+// Styles
 import './styles.scss';
 
 const AddEditPage = (props) => {
+  const [showOk] = useShowOk();
   const dispatch = useDispatch();
   const history = useHistory();
   const { categoryId } = useParams();
@@ -56,6 +60,7 @@ const AddEditPage = (props) => {
         response = await apiCategoryUpdate(values);
       }
     } catch (error) {
+      showOk({ title: NOTIFICATION, content: ERROR_GENERAL });
       console.log(error);
     }
 
@@ -63,12 +68,8 @@ const AddEditPage = (props) => {
     if (response?.success) {
       history.push(PATH_CATEGORIES);
     } else {
-      dispatch(
-        showModalOk({
-          title: NOTIFICATION,
-          content: response?.message ? response?.message : UPDATE_FAILED,
-        })
-      );
+      const message = response.message ? response.message : UPDATE_FAILED;
+      showOk({ title: NOTIFICATION, content: message });
     }
     dispatch(showLoading(false));
   };

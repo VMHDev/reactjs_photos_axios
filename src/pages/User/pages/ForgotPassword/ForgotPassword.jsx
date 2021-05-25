@@ -7,18 +7,20 @@ import { useGetByEmail } from 'hooks/axios/apiUsers';
 import { useAddTokenPassword } from 'hooks/axios/apiAuth';
 import ForgotPasswordForm from 'pages/User/components/ForgotPasswordForm';
 import Banner from 'components/Banner';
-import { showLoading, showModalOk } from 'redux/appSlice';
+import { showLoading } from 'redux/appSlice';
+import useShowOk from 'hooks/modal/useShowOk';
 
 // Constants
 import Images from 'constants/images';
 import { PASSWORD_RESET_TOKEN_LENGTH, WEB_URL } from 'constants/system';
 import { PATH_USER_RESETPASSWORD } from 'constants/route';
-import { NOTIFICATION, PROCESS_FAILED } from 'constants/modal';
+import { NOTIFICATION, PROCESS_FAILED, ERROR_GENERAL } from 'constants/modal';
 
 // Styles
 import './styles.scss';
 
 const ForgotPassword = (props) => {
+  const [showOk] = useShowOk();
   const dispatch = useDispatch();
   const initialValues = {
     email: '',
@@ -58,22 +60,17 @@ const ForgotPassword = (props) => {
           token: sToken,
         };
         const response = await apiAddTokenPassword(objToken);
-        const message = response.message;
+        const message = response.message ? response.message : PROCESS_FAILED;
         if (response.success) {
           setFogotPassword(1);
         } else {
-          // Show dialog
-          dispatch(
-            showModalOk({
-              title: NOTIFICATION,
-              content: message === '' ? PROCESS_FAILED : message,
-            })
-          );
+          showOk({ title: NOTIFICATION, content: message });
         }
       } else {
         setFogotPassword(2);
       }
     } catch (error) {
+      showOk({ title: NOTIFICATION, content: ERROR_GENERAL });
       console.log(error);
     }
     dispatch(showLoading(false));

@@ -5,15 +5,18 @@ import { Base64 } from 'js-base64';
 
 import RegisterForm from 'pages/User/components/RegisterForm';
 import Banner from 'components/Banner';
+import useShowOk from 'hooks/modal/useShowOk';
 
 // Constants
 import Images from 'constants/images';
 import { PATH_USER_LOGIN } from 'constants/route';
+import { NOTIFICATION, ERROR_GENERAL } from 'constants/modal';
 
 // Styles
 import './styles.scss';
 
 const Account = (props) => {
+  const [showOk] = useShowOk();
   const history = useHistory();
 
   // Get cookie
@@ -44,6 +47,7 @@ const Account = (props) => {
       // Redirect
       history.push(PATH_USER_LOGIN);
     } catch (error) {
+      showOk({ title: NOTIFICATION, content: ERROR_GENERAL });
       console.log(error);
     }
   };

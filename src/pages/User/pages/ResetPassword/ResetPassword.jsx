@@ -7,22 +7,24 @@ import momenttimezone from 'moment-timezone';
 
 import { useGetById, useUserUpdate } from 'hooks/axios/apiUsers';
 import { useGetTokenPassword } from 'hooks/axios/apiAuth';
-import { showLoading, showModalOk } from 'redux/appSlice';
+import { showLoading } from 'redux/appSlice';
 
 import ResetPasswordForm from 'pages/User/components/ResetPasswordForm';
 import Banner from 'components/Banner';
 import NotFound from 'components/NotFound';
+import useShowOk from 'hooks/modal/useShowOk';
 
 // Constants
 import Images from 'constants/images';
 import { PATH_USER_LOGIN } from 'constants/route';
 import { PASSWORD_RESET_TOKEN_EXPIRE, TIME_ZONE } from 'constants/system';
-import { NOTIFICATION, PROCESS_FAILED } from 'constants/modal';
+import { NOTIFICATION, PROCESS_FAILED, ERROR_GENERAL } from 'constants/modal';
 
 // Styles
 import './styles.scss';
 
 const ResetPassword = (props) => {
+  const [showOk] = useShowOk();
   const dispatch = useDispatch();
   const history = useHistory();
   const { token } = useParams();
@@ -59,8 +61,6 @@ const ResetPassword = (props) => {
         );
         dateRegister = momenttimezone.tz(dateRegister, TIME_ZONE).toDate();
         const dataNow = momenttimezone.tz(Date.now(), TIME_ZONE).toDate();
-        console.log('dateRegister', dateRegister);
-        console.log('dataNow', dataNow);
         if (dateRegister < dataNow) {
           setIsTokenValid(-1);
         } else {
@@ -89,21 +89,15 @@ const ResetPassword = (props) => {
       let objUser = { ...user, ...values };
       delete objUser.confirmPassword;
       objUser.password = Base64.encode(objUser.password);
-      console.log('objUser', objUser);
       const response = await apiUserUpdate(objUser);
       const message = response.message ? response.message : PROCESS_FAILED;
-      console.log('response', response);
       if (response.success) {
         history.push(PATH_USER_LOGIN);
       } else {
-        dispatch(
-          showModalOk({
-            title: NOTIFICATION,
-            content: message,
-          })
-        );
+        showOk({ title: NOTIFICATION, content: message });
       }
     } catch (error) {
+      showOk({ title: NOTIFICATION, content: ERROR_GENERAL });
       console.log(error);
     }
   };

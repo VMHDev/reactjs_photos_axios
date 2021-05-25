@@ -3,8 +3,6 @@ import { PASS_PHRASE } from 'constants/system';
 
 // Mã hóa một lớp
 export const encryptWithAES = (text) => {
-  console.log('text', text);
-  console.log('PASS_PHRASE', PASS_PHRASE);
   return CryptoJS.AES.encrypt(text, PASS_PHRASE).toString();
 };
 

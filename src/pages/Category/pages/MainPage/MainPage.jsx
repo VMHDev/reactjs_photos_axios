@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Container, Tooltip } from 'reactstrap';
 import { Link, useHistory } from 'react-router-dom';
 import { BsPlusSquareFill } from 'react-icons/bs';
@@ -7,11 +7,12 @@ import { BsPlusSquareFill } from 'react-icons/bs';
 import Banner from 'components/Banner';
 import ModalYesNoCancel from 'components/Modal/ModalYesNoCancel';
 import CategoryTable from 'pages/Category/components/CategoryTable';
-import { showModalOk, showModalYesNoCancel } from 'redux/appSlice';
 import {
   useCategoryGetAll,
   useCategoryDelete,
 } from 'hooks/axios/apiCategories';
+import useShowYesNoCancel from 'hooks/modal/useShowYesNoCancel';
+import useShowOk from 'hooks/modal/useShowOk';
 
 import {
   PATH_CATEGORIES,
@@ -23,13 +24,15 @@ import {
   CONFIRM,
   DELETE_FAILED,
   DELETE_CONFIRM,
+  ERROR_GENERAL,
 } from 'constants/modal';
 import Images from 'constants/images';
 
 const MainPage = (props) => {
   const history = useHistory();
-  const dispatch = useDispatch();
 
+  const [showYesNoCancel] = useShowYesNoCancel();
+  const [showOk] = useShowOk();
   const categoriesState = useSelector((state) => state.categories.data);
   const [categories, setCategories] = useState(categoriesState);
   const [categorySelected, setCategorySelected] = useState(null);
@@ -71,12 +74,10 @@ const MainPage = (props) => {
   const handleCategoryRemoveClick = (category) => {
     if (userLogin) {
       setCategorySelected(category);
-      dispatch(
-        showModalYesNoCancel({
-          title: CONFIRM,
-          content: DELETE_CONFIRM,
-        })
-      );
+      showYesNoCancel({
+        title: CONFIRM,
+        content: DELETE_CONFIRM,
+      });
     } else {
       history.push({
         pathname: PATH_USER_LOGIN,
@@ -92,24 +93,21 @@ const MainPage = (props) => {
       // Call API
       const response = await apiCategoryDelete(categorySelected._id);
       if (!response.success) {
-        // Close dialog
-        dispatch(
-          showModalOk({
-            title: NOTIFICATION,
-            content: response.message ? response.message : DELETE_FAILED,
-          })
-        );
+        showOk({
+          title: NOTIFICATION,
+          content: response.message ? response.message : DELETE_FAILED,
+        });
       }
     } catch (error) {
-      dispatch(showModalOk({ title: NOTIFICATION, content: DELETE_FAILED }));
+      showOk({ title: NOTIFICATION, content: ERROR_GENERAL });
       console.log(error);
     }
     // Close modal
-    dispatch(showModalYesNoCancel({ title: '', content: '' }));
+    showYesNoCancel({ title: '', content: '' });
   };
 
   const handleClickNo = () => {
-    dispatch(showModalYesNoCancel({ title: '', content: '' }));
+    showYesNoCancel({ title: '', content: '' });
   };
 
   // Render GUI

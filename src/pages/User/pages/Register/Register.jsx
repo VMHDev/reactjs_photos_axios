@@ -5,9 +5,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { Base64 } from 'js-base64';
 
 import { useRegister } from 'hooks/axios/apiUsers';
-import { showLoading, showModalOk } from 'redux/appSlice';
+import { showLoading } from 'redux/appSlice';
 import RegisterForm from 'pages/User/components/RegisterForm';
 import Banner from 'components/Banner';
+import useShowOk from 'hooks/modal/useShowOk';
 
 // Constants
 import Images from 'constants/images';
@@ -16,12 +17,14 @@ import {
   NOTIFICATION,
   REGISTER_SUCCESS,
   REGISTER_FAILED,
+  ERROR_GENERAL,
 } from 'constants/modal';
 
 // Styles
 import './styles.scss';
 
 const Register = (props) => {
+  const [showOk] = useShowOk();
   const dispatch = useDispatch();
   const history = useHistory();
   const [apiRegister] = useRegister();
@@ -37,7 +40,8 @@ const Register = (props) => {
   // Handle events
   const handleSubmit = async (values) => {
     let isSuccess = false;
-    let message = '';
+    let messageSuccess = '';
+    let messageFailed = '';
     dispatch(showLoading(true));
     try {
       let objUser = { ...values };
@@ -52,30 +56,22 @@ const Register = (props) => {
       });
 
       // Update state
-      message = response.message;
+      messageSuccess = response.message ? response.message : REGISTER_SUCCESS;
+      messageFailed = response.message ? response.message : REGISTER_FAILED;
       if (response.success) {
         isSuccess = true;
       }
     } catch (error) {
+      showOk({ title: NOTIFICATION, content: ERROR_GENERAL });
       console.log(error);
     }
     dispatch(showLoading(false));
 
     if (isSuccess) {
-      dispatch(
-        showModalOk({
-          title: NOTIFICATION,
-          content: message === '' ? REGISTER_SUCCESS : message,
-        })
-      );
+      showOk({ title: NOTIFICATION, content: messageSuccess });
       history.push(PATH_USER_LOGIN);
     } else {
-      dispatch(
-        showModalOk({
-          title: NOTIFICATION,
-          content: message === '' ? REGISTER_FAILED : message,
-        })
-      );
+      showOk({ title: NOTIFICATION, content: messageFailed });
     }
   };
 
