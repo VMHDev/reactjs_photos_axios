@@ -11,12 +11,14 @@ export const PATH_USER_REGISTER = '/user/register/';
 export const PATH_USER_ACCOUNT = '/user/account/';
 export const PATH_USER_FORGOTPASSWORD = '/user/forgotpassword/';
 export const PATH_USER_RESETPASSWORD = '/user/resetpassword/';
+export const PATH_USER_CHANGEPASSWORD = '/user/changepassword/';
 
 export const PATH_LOGIN = '/login/';
 export const PATH_REGISTER = '/register/';
 export const PATH_ACCOUNT = '/account/';
 export const PATH_FORGOTPASSWORD = '/forgotpassword/';
 export const PATH_RESETPASSWORD = '/resetpassword/';
+export const PATH_CHANGEPASSWORD = '/changepassword/';
 
 // PHOTO
 export const PATH_PHOTO_ADD = '/add/';

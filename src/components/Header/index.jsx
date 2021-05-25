@@ -23,6 +23,7 @@ import {
   PATH_CATEGORIES,
   PATH_USER_LOGIN,
   PATH_USER_ACCOUNT,
+  PATH_USER_CHANGEPASSWORD,
 } from 'constants/route';
 
 // Styles
@@ -63,6 +64,11 @@ const Header = (props) => {
               <DropdownItem>
                 <Link to={PATH_USER_ACCOUNT} className='header__link'>
                   Account
+                </Link>
+              </DropdownItem>
+              <DropdownItem>
+                <Link to={PATH_USER_CHANGEPASSWORD} className='header__link'>
+                  Change password
                 </Link>
               </DropdownItem>
               <DropdownItem>
