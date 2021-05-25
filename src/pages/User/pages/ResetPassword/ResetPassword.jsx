@@ -5,9 +5,9 @@ import { Base64 } from 'js-base64';
 import moment from 'moment';
 import momenttimezone from 'moment-timezone';
 
-import { useGetById } from 'hooks/axios/apiUsers';
+import { useGetById, useUserUpdate } from 'hooks/axios/apiUsers';
 import { useGetTokenPassword } from 'hooks/axios/apiAuth';
-import { showLoading } from 'redux/appSlice';
+import { showLoading, showModalOk } from 'redux/appSlice';
 
 import ResetPasswordForm from 'pages/User/components/ResetPasswordForm';
 import Banner from 'components/Banner';
@@ -16,7 +16,8 @@ import NotFound from 'components/NotFound';
 // Constants
 import Images from 'constants/images';
 import { PATH_USER_LOGIN } from 'constants/route';
-import { PASSWORD_RESET_TOKEN_EXPIRE } from 'constants/system';
+import { PASSWORD_RESET_TOKEN_EXPIRE, TIME_ZONE } from 'constants/system';
+import { NOTIFICATION, PROCESS_FAILED } from 'constants/modal';
 
 // Styles
 import './styles.scss';
@@ -56,8 +57,10 @@ const ResetPassword = (props) => {
           PASSWORD_RESET_TOKEN_EXPIRE,
           'm'
         );
-        dateRegister = momenttimezone.tz(dateRegister, 'Etc/GMT+7').toDate();
-        const dataNow = momenttimezone.tz(Date.now(), 'Etc/GMT+7').toDate();
+        dateRegister = momenttimezone.tz(dateRegister, TIME_ZONE).toDate();
+        const dataNow = momenttimezone.tz(Date.now(), TIME_ZONE).toDate();
+        console.log('dateRegister', dateRegister);
+        console.log('dataNow', dataNow);
         if (dateRegister < dataNow) {
           setIsTokenValid(-1);
         } else {
@@ -80,14 +83,26 @@ const ResetPassword = (props) => {
   };
 
   // Handle events
-  const handleSubmit = (values) => {
+  const [apiUserUpdate] = useUserUpdate();
+  const handleSubmit = async (values) => {
     try {
       let objUser = { ...user, ...values };
       delete objUser.confirmPassword;
       objUser.password = Base64.encode(objUser.password);
-      // const action = updateUser(objUser);
-      // dispatch(action);
-      history.push(PATH_USER_LOGIN);
+      console.log('objUser', objUser);
+      const response = await apiUserUpdate(objUser);
+      const message = response.message ? response.message : PROCESS_FAILED;
+      console.log('response', response);
+      if (response.success) {
+        history.push(PATH_USER_LOGIN);
+      } else {
+        dispatch(
+          showModalOk({
+            title: NOTIFICATION,
+            content: message,
+          })
+        );
+      }
     } catch (error) {
       console.log(error);
     }

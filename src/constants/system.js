@@ -20,6 +20,12 @@ export const WEB_PORT = process.env.REACT_APP_PORT
   : '4004';
 export const WEB_URL = WEB_DOMAIN + WEB_PORT;
 
+// Timezone
+// Ref list value: https://github.com/moment/moment-timezone/blob/develop/data/packed/latest.json
+export const TIME_ZONE = process.env.REACT_APP_TIME_ZONE
+  ? process.env.REACT_APP_TIME_ZONE
+  : 'Etc/GMT+7';
+
 // Chuỗi ký tự bí mật dùng trong mã hóa
 export const PASS_PHRASE = process.env.REACT_APP_PASS_PHRASE
   ? process.env.REACT_APP_PASS_PHRASE

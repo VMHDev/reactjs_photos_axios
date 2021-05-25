@@ -12,5 +12,9 @@ const userApi = {
     const url = '/user/register';
     return axiosClient.post(url, data);
   },
+  update: (data) => {
+    const url = `/user/${data._id}`;
+    return axiosClient.put(url, data);
+  },
 };
 export default userApi;

@@ -62,8 +62,8 @@ const ForgotPassword = (props) => {
         if (response.success) {
           setFogotPassword(1);
         } else {
+          // Show dialog
           dispatch(
-            // Show dialog
             showModalOk({
               title: NOTIFICATION,
               content: message === '' ? PROCESS_FAILED : message,
