@@ -10,3 +10,5 @@ export const REGISTER_SUCCESS = 'Register success';
 export const REGISTER_FAILED = 'Register failed';
 export const UPDATE_SUCCESS = 'Update success';
 export const UPDATE_FAILED = 'Update failed';
+export const PROCESS_SUCCESS = 'Process success';
+export const PROCESS_FAILED = 'Process failed';

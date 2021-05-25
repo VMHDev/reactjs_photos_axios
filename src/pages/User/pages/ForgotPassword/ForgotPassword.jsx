@@ -1,26 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
-import moment from 'moment';
+import { NavLink } from 'react-router-dom';
 import cryptoRandomString from 'crypto-random-string';
 
 import { useGetByEmail } from 'hooks/axios/apiUsers';
-import { addToken } from 'redux/userTokenSlice';
+import { useAddTokenPassword } from 'hooks/axios/apiAuth';
 import ForgotPasswordForm from 'pages/User/components/ForgotPasswordForm';
 import Banner from 'components/Banner';
+import { showLoading, showModalOk } from 'redux/appSlice';
 
 // Constants
 import Images from 'constants/images';
 import { PASSWORD_RESET_TOKEN_LENGTH, WEB_URL } from 'constants/system';
 import { PATH_USER_RESETPASSWORD } from 'constants/route';
+import { NOTIFICATION, PROCESS_FAILED } from 'constants/modal';
 
 // Styles
 import './styles.scss';
 
 const ForgotPassword = (props) => {
   const dispatch = useDispatch();
-
   const initialValues = {
     email: '',
   };
@@ -42,7 +41,9 @@ const ForgotPassword = (props) => {
 
   // Handle events
   const [apiGetByEmail] = useGetByEmail();
+  const [apiAddTokenPassword] = useAddTokenPassword();
   const handleSubmit = async (values) => {
+    dispatch(showLoading(true));
     try {
       setEmail(values.email);
       const response = await apiGetByEmail(values.email);
@@ -53,21 +54,30 @@ const ForgotPassword = (props) => {
       if (userFound) {
         const sToken = generateToken(userFound._id);
         const objToken = {
-          id: uuidv4(),
           user_id: userFound._id,
           token: sToken,
-          delete_flg: false,
-          registered_date: moment().format('YYYY-MM-DD HH:mm:ss'),
         };
-        const action = addToken(objToken);
-        dispatch(action);
-        setFogotPassword(1);
+        const response = await apiAddTokenPassword(objToken);
+        console.log('response', response);
+        const message = response.message;
+        if (response.success) {
+          setFogotPassword(1);
+        } else {
+          dispatch(
+            // Show dialog
+            showModalOk({
+              title: NOTIFICATION,
+              content: message === '' ? PROCESS_FAILED : message,
+            })
+          );
+        }
       } else {
         setFogotPassword(2);
       }
     } catch (error) {
       console.log(error);
     }
+    dispatch(showLoading(false));
   };
 
   const pathResetPassword = PATH_USER_RESETPASSWORD + token;
