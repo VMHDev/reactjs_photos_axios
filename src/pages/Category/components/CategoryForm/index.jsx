@@ -21,7 +21,7 @@ const CategoryForm = (props) => {
         return (
           <Form>
             <FastField
-              name='id'
+              name='_id'
               component={InputField}
               label='Category ID'
               placeholder=''

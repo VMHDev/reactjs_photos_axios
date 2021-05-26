@@ -1,0 +1,111 @@
+import { useDispatch } from 'react-redux';
+import { trackPromise } from 'react-promise-tracker';
+
+import {
+  setCategory,
+  addCategory,
+  updateCategory,
+  removeCategory,
+} from 'redux/categorySlice';
+import categoryApi from 'api/categoryApi';
+import { timeout } from 'utils/helper';
+
+export const useCategoryGetAll = () => {
+  const dispatch = useDispatch();
+
+  const callback = async () => {
+    try {
+      // Call api
+      const response = await trackPromise(categoryApi.getAll());
+      // Update state
+      if (response?.data.success) {
+        const data = response?.data.categories ? response?.data.categories : [];
+        dispatch(setCategory(data));
+      }
+      // Response
+      await trackPromise(timeout(1000));
+      return response?.data;
+    } catch (error) {
+      return error.response.data
+        ? error.response.data
+        : { success: false, message: 'Server error' };
+    }
+  };
+  return [callback];
+};
+
+export const useCategoryAdd = () => {
+  const dispatch = useDispatch();
+
+  const callback = async (params) => {
+    try {
+      // Call api
+      const response = await trackPromise(categoryApi.add(params));
+      // Update state
+      if (response?.data.success) {
+        const action = addCategory(response?.data.category);
+        dispatch(action);
+      }
+      // Response
+      await trackPromise(timeout(1000));
+      return response?.data;
+    } catch (error) {
+      return error.response.data
+        ? error.response.data
+        : { success: false, message: 'Server error' };
+    }
+  };
+
+  return [callback];
+};
+
+export const useCategoryUpdate = () => {
+  const dispatch = useDispatch();
+
+  const callback = async (params) => {
+    try {
+      // Call api
+      const response = await trackPromise(categoryApi.update(params));
+      // Update state
+      if (response?.data.success) {
+        const action = updateCategory(params);
+        dispatch(action);
+      }
+      // Response
+      await trackPromise(timeout(1000));
+      return response?.data;
+    } catch (error) {
+      return error.response.data
+        ? error.response.data
+        : { success: false, message: 'Server error' };
+    }
+  };
+
+  return [callback];
+};
+
+export const useCategoryDelete = () => {
+  const dispatch = useDispatch();
+
+  const callback = async (params) => {
+    try {
+      console.log('params', params);
+      // Call api
+      const response = await trackPromise(categoryApi.delete(params));
+      // Update state
+      if (response?.data.success) {
+        const action = removeCategory(params);
+        dispatch(action);
+      }
+      // Response
+      await trackPromise(timeout(1000));
+      return response?.data;
+    } catch (error) {
+      return error.response.data
+        ? error.response.data
+        : { success: false, message: 'Server error' };
+    }
+  };
+
+  return [callback];
+};

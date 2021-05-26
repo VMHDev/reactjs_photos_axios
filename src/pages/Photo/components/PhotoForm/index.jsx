@@ -9,7 +9,7 @@ import RandomPhotoField from 'components/RandomPhotoField';
 import * as Yup from 'yup';
 
 const LoadDataCategories = () => {
-  const categories = useSelector((state) => state.categories);
+  const categories = useSelector((state) => state.categories.data);
   let categoriesOption = [];
   for (let item of categories) {
     const itemOptions = {

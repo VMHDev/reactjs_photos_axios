@@ -8,12 +8,17 @@ import { v4 as uuidv4 } from 'uuid';
 import Banner from 'components/Banner';
 import PhotoForm from 'pages/Photo/components/PhotoForm';
 import { timeout } from 'utils/helper';
+import useShowOk from 'hooks/modal/useShowOk';
 
+// Constants
 import { PATH_PHOTOS } from 'constants/route';
+import { NOTIFICATION, ERROR_GENERAL } from 'constants/modal';
 
+// Styles
 import './styles.scss';
 
 const AddEditPage = (props) => {
+  const [showOk] = useShowOk();
   const dispatch = useDispatch();
   const history = useHistory();
   const { photoId } = useParams();
@@ -49,6 +54,7 @@ const AddEditPage = (props) => {
       }
       history.push(PATH_PHOTOS);
     } catch (error) {
+      showOk({ title: NOTIFICATION, content: ERROR_GENERAL });
       console.log(error);
     }
     dispatch(showLoading(false));

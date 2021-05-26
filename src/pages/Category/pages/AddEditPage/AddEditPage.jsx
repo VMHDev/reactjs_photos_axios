@@ -1,60 +1,75 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { showLoading } from 'redux/appSlice';
-import { addCategory, updateCategory } from 'redux/categorySlice';
 import { useHistory, useParams } from 'react-router-dom';
 
 import Banner from 'components/Banner';
 import CategoryForm from 'pages/Category/components/CategoryForm';
-import { timeout } from 'utils/helper';
 
+import { showLoading } from 'redux/appSlice';
+import { useCategoryAdd, useCategoryUpdate } from 'hooks/axios/apiCategories';
+import useShowOk from 'hooks/modal/useShowOk';
+
+// Constants
 import { PATH_CATEGORIES } from 'constants/route';
+import { NOTIFICATION, UPDATE_FAILED, ERROR_GENERAL } from 'constants/modal';
 
+// Styles
 import './styles.scss';
 
 const AddEditPage = (props) => {
+  const [showOk] = useShowOk();
   const dispatch = useDispatch();
   const history = useHistory();
   const { categoryId } = useParams();
   const isAddMode = categoryId === 'add' || !categoryId ? true : false;
 
   const editedCategory = useSelector((state) => {
-    const foundCategory = state.categories.find(
-      (x) => x.id.toString() === categoryId
+    const foundCategory = state.categories.data.find(
+      (x) => x._id.toString() === categoryId
     );
     return foundCategory;
   });
 
-  const maxCategories = useSelector((state) => {
-    let max = Math.max.apply(
-      Math,
-      state.categories.map((object) => object.id)
-    );
-    return max;
-  });
-
   const initialValues = isAddMode
     ? {
-        id: maxCategories + 1,
+        _id: 'Auto generate',
         name: '',
       }
     : editedCategory;
 
+  // Redirect when missing state
+  useEffect(() => {
+    if (!editedCategory && !isAddMode) {
+      history.push(PATH_CATEGORIES);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editedCategory]);
+
+  // Handle events
+  const [apiCategoryAdd] = useCategoryAdd();
+  const [apiCategoryUpdate] = useCategoryUpdate();
+
   const handleSubmit = async (values) => {
     dispatch(showLoading(true));
+    let response = null;
     try {
       if (isAddMode) {
-        const action = addCategory(values);
-        dispatch(action);
-        await timeout(1000);
+        response = await apiCategoryAdd(values);
       } else {
-        const action = updateCategory(values);
-        dispatch(action);
-        await timeout(1000);
+        // Call Api
+        response = await apiCategoryUpdate(values);
       }
-      history.push(PATH_CATEGORIES);
     } catch (error) {
+      showOk({ title: NOTIFICATION, content: ERROR_GENERAL });
       console.log(error);
+    }
+
+    // Handle response
+    if (response?.success) {
+      history.push(PATH_CATEGORIES);
+    } else {
+      const message = response.message ? response.message : UPDATE_FAILED;
+      showOk({ title: NOTIFICATION, content: message });
     }
     dispatch(showLoading(false));
   };
