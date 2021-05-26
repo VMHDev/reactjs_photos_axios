@@ -58,6 +58,14 @@ const PhotoForm = (props) => {
             />
 
             <FastField
+              name='title'
+              component={InputField}
+              label='Title'
+              placeholder='Eg: Wow nature ...'
+              type='textarea'
+            />
+
+            <FastField
               name='categoryId'
               component={SelectField}
               label='Category'
