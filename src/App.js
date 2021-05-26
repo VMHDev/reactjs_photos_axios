@@ -13,6 +13,7 @@ import Header from 'components/Header';
 import NotFound from 'components/NotFound';
 import { ModalOk } from 'components/Modal';
 import Loading from 'components/Loading';
+import useShowOk from 'hooks/modal/useShowOk';
 
 // Constants
 import {
@@ -22,6 +23,7 @@ import {
   PATH_USER,
   PATH_NOTFOUND,
 } from './constants/route';
+import { NOTIFICATION, ERROR_GENERAL } from 'constants/modal';
 
 // Styles
 import './App.scss';
@@ -40,14 +42,14 @@ const User = React.lazy(() => import('./pages/User/User'));
 // Main
 function App() {
   const dispatch = useDispatch();
-
+  const [showOk] = useShowOk();
   // Handle events
   const handleLogoutClick = () => {
     try {
       dispatch(removeLogin(null));
       return <Redirect to={PATH_HOME} />;
     } catch (error) {
-      alert('Logout Fail!');
+      showOk({ title: NOTIFICATION, content: ERROR_GENERAL });
       console.log(error);
     }
   };

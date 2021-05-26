@@ -1,13 +1,30 @@
+// Độ dài của token reset password
 export const PASSWORD_RESET_TOKEN_LENGTH = parseInt(
   process.env.REACT_APP_PASSWORD_RESET_TOKEN_LENGTH
+    ? process.env.REACT_APP_PASSWORD_RESET_TOKEN_LENGTH
+    : '12'
 );
-export const PASSWORD_TOKEN_EXPIRE = parseFloat(
-  process.env.REACT_APP_PASSWORD_TOKEN_EXPIRE
+// Thời gian hết hạn của token reset password
+export const PASSWORD_RESET_TOKEN_EXPIRE = parseFloat(
+  process.env.REACT_APP_PASSWORD_RESET_TOKEN_EXPIRE
+    ? process.env.REACT_APP_PASSWORD_RESET_TOKEN_EXPIRE
+    : '2'
 );
 
-export const WEB_DOMAIN = process.env.REACT_APP_WEB_DOMAIN;
-export const WEB_PORT = process.env.REACT_APP_PORT;
+// Đường dẫn reset password
+export const WEB_DOMAIN = process.env.REACT_APP_WEB_DOMAIN
+  ? process.env.REACT_APP_WEB_DOMAIN
+  : 'http://localhost/';
+export const WEB_PORT = process.env.REACT_APP_PORT
+  ? process.env.REACT_APP_PORT
+  : '4004';
 export const WEB_URL = WEB_DOMAIN + WEB_PORT;
+
+// Timezone
+// Ref list value: https://github.com/moment/moment-timezone/blob/develop/data/packed/latest.json
+export const TIME_ZONE = process.env.REACT_APP_TIME_ZONE
+  ? process.env.REACT_APP_TIME_ZONE
+  : 'Etc/GMT+7';
 
 // Chuỗi ký tự bí mật dùng trong mã hóa
 export const PASS_PHRASE = process.env.REACT_APP_PASS_PHRASE

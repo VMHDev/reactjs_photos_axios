@@ -8,7 +8,8 @@ import Banner from 'components/Banner';
 import ModalYesNoCancel from 'components/Modal/ModalYesNoCancel';
 import PhotoList from 'pages/Photo/components/PhotoList';
 import { removePhoto } from 'redux/photoSlice';
-import { showModalOk, showModalYesNoCancel } from 'redux/appSlice';
+import useShowOk from 'hooks/modal/useShowOk';
+import useShowYesNoCancel from 'hooks/modal/useShowYesNoCancel';
 
 import { PATH_PHOTOS, PATH_PHOTOS_ADD, PATH_USER_LOGIN } from 'constants/route';
 import {
@@ -20,6 +21,8 @@ import {
 import Images from 'constants/images';
 
 const MainPage = (props) => {
+  const [showOk] = useShowOk();
+  const [showYesNoCancel] = useShowYesNoCancel();
   const photos = useSelector((state) => state.photos);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -44,12 +47,7 @@ const MainPage = (props) => {
   const handlePhotoRemoveClick = (photo) => {
     if (userLogin) {
       setPhotoSelected(photo);
-      dispatch(
-        showModalYesNoCancel({
-          title: CONFIRM,
-          content: DELETE_CONFIRM,
-        })
-      );
+      showYesNoCancel({ title: CONFIRM, content: DELETE_CONFIRM });
     } else {
       history.push({
         pathname: PATH_USER_LOGIN,
@@ -65,15 +63,15 @@ const MainPage = (props) => {
       const action = removePhoto(removePhotoId);
       dispatch(action);
       // Close modal
-      dispatch(showModalYesNoCancel({ title: '', content: '' }));
+      showYesNoCancel({ title: '', content: '' });
     } catch (error) {
-      dispatch(showModalOk({ title: NOTIFICATION, content: DELETE_FAILED }));
+      showOk({ title: NOTIFICATION, content: DELETE_FAILED });
       console.log(error);
     }
   };
 
   const handleClickNo = () => {
-    dispatch(showModalYesNoCancel({ title: '', content: '' }));
+    showYesNoCancel({ title: '', content: '' });
   };
 
   // Render GUI

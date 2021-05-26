@@ -3,11 +3,12 @@ import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Base64 } from 'js-base64';
 
-import { useLogin } from 'hooks/axios/apiUsers';
+import { useLogin } from 'hooks/axios/apiAuth';
 import { addLogin, removeLogin } from 'redux/cookieSlice';
-import { showLoading, showModalOk } from 'redux/appSlice';
+import { showLoading } from 'redux/appSlice';
 import LoginForm from 'pages/User/components/LoginForm';
 import Banner from 'components/Banner';
+import useShowOk from 'hooks/modal/useShowOk';
 
 // Constants
 import Images from 'constants/images';
@@ -18,12 +19,14 @@ import {
   PATH_PHOTOS_ADD,
   PATH_CATEGORIES_ADD,
 } from 'constants/route';
-import { NOTIFICATION, LOGIN_FAILED } from 'constants/modal';
+import { NOTIFICATION, LOGIN_FAILED, ERROR_GENERAL } from 'constants/modal';
+
 // Styles
 import './styles.scss';
 
 // Main
 const LoginPage = (props) => {
+  const [showOk] = useShowOk();
   const userLogin = useSelector((state) => state.cookies.userLogin);
 
   const dispatch = useDispatch();
@@ -56,7 +59,7 @@ const LoginPage = (props) => {
       });
 
       // Update state
-      message = response.message;
+      message = response.message ? response.message : LOGIN_FAILED;
       if (response.success) {
         dispatch(
           addLogin({ user: response.user, token: response.accessToken })
@@ -64,6 +67,7 @@ const LoginPage = (props) => {
         isSuccess = true;
       }
     } catch (error) {
+      showOk({ title: NOTIFICATION, content: ERROR_GENERAL });
       console.log(error);
     }
     dispatch(showLoading(false));
@@ -92,13 +96,7 @@ const LoginPage = (props) => {
           break;
       }
     } else {
-      dispatch(
-        // Show dialog
-        showModalOk({
-          title: NOTIFICATION,
-          content: message === '' ? LOGIN_FAILED : message,
-        })
-      );
+      showOk({ title: NOTIFICATION, content: message });
     }
   };
 

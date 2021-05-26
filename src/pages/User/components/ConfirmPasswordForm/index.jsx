@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 import InputField from 'components/InputField';
 
 const ResetPasswordForm = (props) => {
-  const { initialValues, onSubmit } = props;
+  const { initialValues, onSubmit, typePage } = props;
 
   const validationSchema = Yup.object().shape({
     password: Yup.string()
@@ -31,9 +31,12 @@ const ResetPasswordForm = (props) => {
             <FastField
               name='email'
               component={InputField}
-              label='Email'
+              label={typePage && typePage === 'change-password' ? '' : 'Email'}
               placeholder='your-email@mail.com'
               disabled
+              type={
+                typePage && typePage === 'change-password' ? 'hidden' : 'text'
+              }
             />
 
             <FastField
