@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { Base64 } from 'js-base64';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { useLogin } from 'hooks/axios/apiAuth';
-import { useUserUpdate } from 'hooks/axios/apiUsers';
+import { useChangePassword } from 'hooks/axios/apiAuth';
 import { showLoading } from 'redux/appSlice';
 
 import ConfirmPasswordForm from 'pages/User/components/ConfirmPasswordForm';
 import PasswordForm from 'pages/User/components/PasswordForm';
 import Banner from 'components/Banner';
 import useShowOk from 'hooks/modal/useShowOk';
-import { getValueFromCookies } from 'utils/cookie';
 
 // Constants
 import Images from 'constants/images';
@@ -22,7 +21,6 @@ import {
   ERROR_GENERAL,
   PASSWORD_INVALID,
 } from 'constants/modal';
-import { COOKIES_USERLOGIN_NAME } from 'constants/system';
 
 // Styles
 import './styles.scss';
@@ -45,16 +43,16 @@ const ChangePassword = (props) => {
     password: '',
   };
 
+  // Get info user
+  const userLogin = useSelector((state) => state.cookies.userLogin);
+
   // Handle events
   const [apiLogin] = useLogin();
-  const objUserLogin = getValueFromCookies(COOKIES_USERLOGIN_NAME)
-    ? JSON.parse(getValueFromCookies(COOKIES_USERLOGIN_NAME))
-    : null;
   const handleSubmitStep1 = async (values) => {
     dispatch(showLoading(true));
     try {
       const response = await apiLogin({
-        email: objUserLogin.email,
+        email: userLogin.email,
         password: Base64.encode(values.password),
       });
       if (response.success) {
@@ -70,7 +68,7 @@ const ChangePassword = (props) => {
     dispatch(showLoading(false));
   };
 
-  const [apiUserUpdate] = useUserUpdate();
+  const [apiChangePassword] = useChangePassword();
   const handleSubmitStep2 = async (values) => {
     dispatch(showLoading(true));
     try {
@@ -79,7 +77,7 @@ const ChangePassword = (props) => {
       delete objUser.confirmPassword;
       objUser.password = Base64.encode(objUser.password);
 
-      const response = await apiUserUpdate(objUser);
+      const response = await apiChangePassword(objUser);
       const message = response.message ? response.message : PROCESS_FAILED;
       if (response.success) {
         history.push(PATH_USER_LOGIN);

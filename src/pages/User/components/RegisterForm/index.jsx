@@ -16,14 +16,20 @@ const RegisterForm = (props) => {
       .required('This field is required.')
       .email('This field is invalid email'),
 
-    password: Yup.string()
-      .required('This field is required.')
-      .min(6, 'Min length 6 character')
-      .max(20, 'Max length 20 character'),
+    password:
+      typePage && typePage === 'account'
+        ? Yup.string()
+        : Yup.string()
+            .required('This field is required.')
+            .min(6, 'Min length 6 character')
+            .max(20, 'Max length 20 character'),
 
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref('password'), null], "Password don't match!")
-      .required('This field is required.'),
+    confirmPassword:
+      typePage && typePage === 'account'
+        ? Yup.string()
+        : Yup.string()
+            .oneOf([Yup.ref('password'), null], "Password don't match!")
+            .required('This field is required.'),
   });
 
   return (
@@ -35,6 +41,14 @@ const RegisterForm = (props) => {
         return (
           <Form>
             <FastField
+              name='email'
+              component={InputField}
+              label='Email'
+              placeholder='your-email@mail.com'
+              disabled={typePage && typePage === 'account' ? true : false}
+            />
+
+            <FastField
               name='name'
               component={InputField}
               label='Name'
@@ -42,27 +56,21 @@ const RegisterForm = (props) => {
             />
 
             <FastField
-              name='email'
-              component={InputField}
-              label='Email'
-              placeholder='your-email@mail.com'
-              disabled={typePage === 'account' ? true : false}
-            />
-
-            <FastField
               name='password'
               component={InputField}
-              label='Password'
+              label={typePage && typePage === 'account' ? '' : 'Password'}
               placeholder='********'
-              type='password'
+              type={typePage && typePage === 'account' ? 'hidden' : 'password'}
             />
 
             <FastField
               name='confirmPassword'
               component={InputField}
-              label='Confirm Password'
+              label={
+                typePage && typePage === 'account' ? '' : 'Confirm Password'
+              }
               placeholder='********'
-              type='password'
+              type={typePage && typePage === 'account' ? 'hidden' : 'password'}
             />
 
             <FormGroup>

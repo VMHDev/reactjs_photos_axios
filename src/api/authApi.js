@@ -4,6 +4,10 @@ const authApi = {
     const url = '/auth/login';
     return axiosClient.post(url, data);
   },
+  changePassword: (data) => {
+    const url = `/auth/password/${data._id}`;
+    return axiosClient.put(url, data);
+  },
   getTokenPassword: (data) => {
     const url = `/auth/token-password/${data}`;
     return axiosClient.get(url);
