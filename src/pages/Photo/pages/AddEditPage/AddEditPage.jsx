@@ -38,6 +38,9 @@ const AddEditPage = (props) => {
     return foundPhoto;
   });
 
+  // Get cookie
+  const userLogin = useSelector((state) => state.cookies.userLogin);
+
   const initialValues = isAddMode
     ? {
         id: 'Auto generate',
@@ -62,19 +65,22 @@ const AddEditPage = (props) => {
   const [apiPhotoUpdate] = usePhotoUpdate();
 
   const handleSubmit = async (values) => {
+    console.log('values', values);
     dispatch(showLoading(true));
     let response = null;
     try {
+      const data = { ...values, userId: userLogin._id };
+      console.log('data', data);
       if (isAddMode) {
-        response = await apiPhotoAdd(values);
+        response = await apiPhotoAdd(data);
       } else {
-        response = await apiPhotoUpdate(values);
+        response = await apiPhotoUpdate(data);
       }
     } catch (error) {
       showOk({ title: NOTIFICATION, content: ERROR_GENERAL });
       console.log(error);
     }
-
+    console.log('response', response);
     // Handle response
     if (response?.success) {
       history.push(PATH_PHOTOS);

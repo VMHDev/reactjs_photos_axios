@@ -28,12 +28,7 @@ const PhotoForm = (props) => {
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('This field is required.'),
     desc: Yup.string(),
-    categoryId: Yup.number().required('This field is required.').nullable(),
-
-    // Luôn luôn required
-    //photo: Yup.string().required("This field is required."),
-
-    // Chỉ required khi categoryId = 1
+    categoryId: Yup.string().required('This field is required.').nullable(),
     photo: Yup.string().when('categoryId', {
       is: 1,
       then: Yup.string().required('This field is required.'),
