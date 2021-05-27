@@ -23,12 +23,12 @@ const LoadDataCategories = () => {
 
 const PhotoForm = (props) => {
   const { initialValues, isAddMode, onSubmit } = props;
-
+  console.log('initialValues', initialValues);
   const categoriesOption = LoadDataCategories();
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('This field is required.'),
-
+    desc: Yup.string(),
     categoryId: Yup.number().required('This field is required.').nullable(),
 
     // Luôn luôn required
@@ -58,11 +58,12 @@ const PhotoForm = (props) => {
             />
 
             <FastField
-              name='title'
+              name='desc'
               component={InputField}
-              label='Title'
-              placeholder='Eg: Wow nature ...'
+              label='Description'
+              placeholder='Eg: This is ...'
               type='textarea'
+              style={{ marginTop: '0px', marginBottom: '0px', height: '120px' }}
             />
 
             <FastField
@@ -73,11 +74,7 @@ const PhotoForm = (props) => {
               options={categoriesOption}
             />
 
-            <FastField
-              name='photo'
-              component={RandomPhotoField}
-              label='Photo'
-            />
+            <FastField name='path' component={RandomPhotoField} label='Photo' />
 
             <FormGroup>
               <Button type='submit' color={isAddMode ? 'primary' : 'success'}>

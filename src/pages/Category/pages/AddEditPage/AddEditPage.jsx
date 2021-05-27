@@ -21,6 +21,7 @@ const AddEditPage = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { categoryId } = useParams();
+
   const isAddMode = categoryId === 'add' || !categoryId ? true : false;
 
   const editedCategory = useSelector((state) => {
@@ -56,7 +57,6 @@ const AddEditPage = (props) => {
       if (isAddMode) {
         response = await apiCategoryAdd(values);
       } else {
-        // Call Api
         response = await apiCategoryUpdate(values);
       }
     } catch (error) {
