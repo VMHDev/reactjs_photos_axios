@@ -33,6 +33,7 @@ const AddEditPage = (props) => {
           ...foundPhoto,
           categoryId: foundPhoto.category._id,
           userId: foundPhoto.user._id,
+          isPublic: foundPhoto.isPublic ? foundPhoto.isPublic : false,
         }
       : foundPhoto;
     return foundPhoto;
@@ -49,6 +50,7 @@ const AddEditPage = (props) => {
         title: '',
         desc: '',
         userId: '',
+        isPublic: false,
       }
     : editedPhoto;
 
