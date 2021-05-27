@@ -6,7 +6,7 @@ import moment from 'moment';
 import momenttimezone from 'moment-timezone';
 
 import { useGetById, useUserUpdate } from 'hooks/axios/apiUsers';
-import { useGetTokenPassword } from 'hooks/axios/apiAuth';
+import { useGetTokenPassword } from 'hooks/axios/apiAuths';
 import { showLoading } from 'redux/appSlice';
 
 import ConfirmPasswordForm from 'pages/User/components/ConfirmPasswordForm';

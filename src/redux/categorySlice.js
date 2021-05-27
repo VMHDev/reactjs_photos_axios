@@ -1,22 +1,42 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { addToLocalStorageArray } from 'utils/helper';
+
+const initCategories = () => {
+  const categories = localStorage.getItem('categories');
+  if (categories.data) {
+    return JSON.parse(categories);
+  } else {
+    return { data: [] };
+  }
+};
+
+const initialState = initCategories();
+
 const category = createSlice({
   name: 'categories',
-  initialState: {
-    data: [],
-  },
+  initialState,
   reducers: {
     setCategory: (state, action) => {
       state.data = action.payload;
+
+      // Store local storage
+      localStorage.setItem('categories', JSON.stringify(state));
     },
     addCategory: (state, action) => {
       state.data.push(action.payload);
+
+      // Store local storage
+      addToLocalStorageArray('categories', action.payload);
     },
     removeCategory: (state, action) => {
       const removeCategoryId = action.payload;
       state.data = state.data.filter(
         (category) => category._id !== removeCategoryId
       );
+
+      // Store local storage
+      localStorage.setItem('categories', JSON.stringify(state));
       return state;
     },
     updateCategory: (state, action) => {
@@ -27,6 +47,8 @@ const category = createSlice({
       if (categoryIndex >= 0) {
         state.data[categoryIndex] = udpCategory;
       }
+      // Store local storage
+      localStorage.setItem('categories', JSON.stringify(state));
     },
   },
 });

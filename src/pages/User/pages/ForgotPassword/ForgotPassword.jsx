@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import cryptoRandomString from 'crypto-random-string';
 
 import { useGetByEmail } from 'hooks/axios/apiUsers';
-import { useAddTokenPassword } from 'hooks/axios/apiAuth';
+import { useAddTokenPassword } from 'hooks/axios/apiAuths';
 import EmailForm from 'pages/User/components/EmailForm';
 import Banner from 'components/Banner';
 import { showLoading } from 'redux/appSlice';

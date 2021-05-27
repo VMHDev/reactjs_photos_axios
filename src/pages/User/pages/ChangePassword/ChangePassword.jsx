@@ -3,8 +3,8 @@ import { useHistory } from 'react-router-dom';
 import { Base64 } from 'js-base64';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { useLogin } from 'hooks/axios/apiAuth';
-import { useChangePassword } from 'hooks/axios/apiAuth';
+import { useLogin } from 'hooks/axios/apiAuths';
+import { useChangePassword } from 'hooks/axios/apiAuths';
 import { showLoading } from 'redux/appSlice';
 
 import ConfirmPasswordForm from 'pages/User/components/ConfirmPasswordForm';

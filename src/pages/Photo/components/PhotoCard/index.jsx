@@ -16,7 +16,7 @@ const PhotoCard = (props) => {
 
   return (
     <div className='photo'>
-      <img src={photo.photo} alt={photo.title} />
+      <img src={photo.path} alt={photo.title} />
 
       <div className='photo__overlay'>
         <h3 className='photo__title'>{photo.title}</h3>

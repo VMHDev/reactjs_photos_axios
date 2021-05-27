@@ -51,7 +51,7 @@ const MainPage = (props) => {
         setCategories(data);
       }
     };
-    if (categoriesState.length === 0) {
+    if (categoriesState?.length === 0) {
       callApi();
     } else {
       setCategories(categoriesState);
