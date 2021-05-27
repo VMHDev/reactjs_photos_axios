@@ -1,26 +1,21 @@
 import { useDispatch } from 'react-redux';
 import { trackPromise } from 'react-promise-tracker';
 
-import {
-  setCategory,
-  addCategory,
-  updateCategory,
-  removeCategory,
-} from 'redux/categorySlice';
-import categoryApi from 'api/categoryApi';
+import { setPhoto, addPhoto, updatePhoto, removePhoto } from 'redux/photoSlice';
+import photoApi from 'api/photoApi';
 import { timeout } from 'utils/helper';
 
-export const useCategoryGetAll = () => {
+export const usePhotoGetAll = () => {
   const dispatch = useDispatch();
 
   const callback = async () => {
     try {
       // Call api
-      const response = await trackPromise(categoryApi.getAll());
+      const response = await trackPromise(photoApi.getAll());
       // Update state
       if (response?.data.success) {
-        const data = response?.data.categories ? response?.data.categories : [];
-        dispatch(setCategory(data));
+        const data = response?.data.photos ? response?.data.photos : [];
+        dispatch(setPhoto(data));
       }
       // Response
       await trackPromise(timeout(1000));
@@ -34,21 +29,42 @@ export const useCategoryGetAll = () => {
   return [callback];
 };
 
-export const useCategoryAdd = () => {
+export const usePhotoGetByUser = () => {
   const dispatch = useDispatch();
 
   const callback = async (params) => {
     try {
       // Call api
-      const response = await trackPromise(categoryApi.add(params));
-
+      const response = await trackPromise(
+        photoApi.getByUser({ userId: params })
+      );
+      // Update state
       if (response?.data.success) {
-        // Remove info unnecessary
-        const data = (({ _id, name }) => ({ _id, name }))(
-          response?.data.category
-        );
-        // Update state
-        const action = addCategory(data);
+        const data = response?.data.photos ? response?.data.photos : [];
+        dispatch(setPhoto(data));
+      }
+      // Response
+      await trackPromise(timeout(1000));
+      return response?.data;
+    } catch (error) {
+      return error.response.data
+        ? error.response.data
+        : { success: false, message: 'Server error' };
+    }
+  };
+  return [callback];
+};
+
+export const usePhotoAdd = () => {
+  const dispatch = useDispatch();
+
+  const callback = async (params) => {
+    try {
+      // Call api
+      const response = await trackPromise(photoApi.add(params));
+      // Update state
+      if (response?.data.success) {
+        const action = addPhoto(response?.data.photo);
         dispatch(action);
       }
       // Response
@@ -64,16 +80,16 @@ export const useCategoryAdd = () => {
   return [callback];
 };
 
-export const useCategoryUpdate = () => {
+export const usePhotoUpdate = () => {
   const dispatch = useDispatch();
 
   const callback = async (params) => {
     try {
       // Call api
-      const response = await trackPromise(categoryApi.update(params));
+      const response = await trackPromise(photoApi.update(params));
       // Update state
       if (response?.data.success) {
-        const action = updateCategory(params);
+        const action = updatePhoto(params);
         dispatch(action);
       }
       // Response
@@ -89,16 +105,16 @@ export const useCategoryUpdate = () => {
   return [callback];
 };
 
-export const useCategoryDelete = () => {
+export const usePhotoDelete = () => {
   const dispatch = useDispatch();
 
   const callback = async (params) => {
     try {
       // Call api
-      const response = await trackPromise(categoryApi.delete(params));
+      const response = await trackPromise(photoApi.delete(params));
       // Update state
       if (response?.data.success) {
-        const action = removeCategory(params);
+        const action = removePhoto(params);
         dispatch(action);
       }
       // Response

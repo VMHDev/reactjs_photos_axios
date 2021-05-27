@@ -4,7 +4,7 @@ import React from 'react';
 import { FormFeedback, FormGroup, Input, Label } from 'reactstrap';
 
 const InputField = (props) => {
-  const { field, form, type, label, placeholder, disabled } = props;
+  const { field, form, type, label, placeholder, disabled, style } = props;
 
   const { name } = field;
   // const { name, value, onChange, onBlur } = field;
@@ -30,6 +30,7 @@ const InputField = (props) => {
         disabled={disabled}
         placeholder={placeholder}
         invalid={showError}
+        style={style}
       />
 
       {/* {showError && <FormFeedback>{errors[name]}</FormFeedback>} */}

@@ -13,7 +13,7 @@ const LoadDataCategories = () => {
   let categoriesOption = [];
   for (let item of categories) {
     const itemOptions = {
-      value: item.id,
+      value: item._id,
       label: item.name,
     };
     categoriesOption.push(itemOptions);
@@ -23,18 +23,12 @@ const LoadDataCategories = () => {
 
 const PhotoForm = (props) => {
   const { initialValues, isAddMode, onSubmit } = props;
-
   const categoriesOption = LoadDataCategories();
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('This field is required.'),
-
-    categoryId: Yup.number().required('This field is required.').nullable(),
-
-    // Luôn luôn required
-    //photo: Yup.string().required("This field is required."),
-
-    // Chỉ required khi categoryId = 1
+    desc: Yup.string(),
+    categoryId: Yup.string().required('This field is required.').nullable(),
     photo: Yup.string().when('categoryId', {
       is: 1,
       then: Yup.string().required('This field is required.'),
@@ -58,6 +52,15 @@ const PhotoForm = (props) => {
             />
 
             <FastField
+              name='desc'
+              component={InputField}
+              label='Description'
+              placeholder='Eg: This is ...'
+              type='textarea'
+              style={{ marginTop: '0px', marginBottom: '0px', height: '120px' }}
+            />
+
+            <FastField
               name='categoryId'
               component={SelectField}
               label='Category'
@@ -65,11 +68,7 @@ const PhotoForm = (props) => {
               options={categoriesOption}
             />
 
-            <FastField
-              name='photo'
-              component={RandomPhotoField}
-              label='Photo'
-            />
+            <FastField name='path' component={RandomPhotoField} label='Photo' />
 
             <FormGroup>
               <Button type='submit' color={isAddMode ? 'primary' : 'success'}>

@@ -9,7 +9,7 @@ const PhotoList = (props) => {
   return (
     <Row>
       {photoList.map((photo) => (
-        <Col key={photo.id} xs='12' md='6' lg='3'>
+        <Col key={photo._id} xs='12' md='6' lg='3'>
           <PhotoCard
             photo={photo}
             onEditClick={onPhotoEditClick}

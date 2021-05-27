@@ -1,18 +1,16 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addPhoto, updatePhoto } from 'redux/photoSlice';
 import { showLoading } from 'redux/appSlice';
 import { useHistory, useParams } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
 
 import Banner from 'components/Banner';
 import PhotoForm from 'pages/Photo/components/PhotoForm';
-import { timeout } from 'utils/helper';
+import { usePhotoAdd, usePhotoUpdate } from 'hooks/axios/apiPhotos';
 import useShowOk from 'hooks/modal/useShowOk';
 
 // Constants
 import { PATH_PHOTOS } from 'constants/route';
-import { NOTIFICATION, ERROR_GENERAL } from 'constants/modal';
+import { NOTIFICATION, ERROR_GENERAL, UPDATE_FAILED } from 'constants/modal';
 
 // Styles
 import './styles.scss';
@@ -26,36 +24,66 @@ const AddEditPage = (props) => {
   const isAddMode = photoId === 'add' || !photoId ? true : false;
 
   const editedPhoto = useSelector((state) => {
-    const foundPhoto = state.photos.find((x) => x.id === photoId);
+    let foundPhoto = state.photos.data.find(
+      (x) => x._id.toString() === photoId
+    );
+
+    foundPhoto = foundPhoto
+      ? {
+          ...foundPhoto,
+          categoryId: foundPhoto.category._id,
+          userId: foundPhoto.user._id,
+        }
+      : foundPhoto;
     return foundPhoto;
   });
 
+  // Get cookie
+  const userLogin = useSelector((state) => state.cookies.userLogin);
+
   const initialValues = isAddMode
     ? {
-        id: uuidv4(),
+        id: 'Auto generate',
+        categoryId: '',
+        path: '',
         title: '',
-        categoryId: null,
-        photo: '',
+        desc: '',
+        userId: '',
       }
     : editedPhoto;
 
+  // Redirect when missing state
+  useEffect(() => {
+    if (!editedPhoto && !isAddMode) {
+      history.push(PATH_PHOTOS);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editedPhoto]);
+
   // Handle events
+  const [apiPhotoAdd] = usePhotoAdd();
+  const [apiPhotoUpdate] = usePhotoUpdate();
+
   const handleSubmit = async (values) => {
     dispatch(showLoading(true));
+    let response = null;
     try {
+      const data = { ...values, userId: userLogin._id };
       if (isAddMode) {
-        const action = addPhoto(values);
-        dispatch(action);
-        await timeout(1000);
+        response = await apiPhotoAdd(data);
       } else {
-        const action = updatePhoto(values);
-        dispatch(action);
-        await timeout(1000);
+        response = await apiPhotoUpdate(data);
       }
-      history.push(PATH_PHOTOS);
     } catch (error) {
       showOk({ title: NOTIFICATION, content: ERROR_GENERAL });
       console.log(error);
+    }
+    // Handle response
+    if (response?.success) {
+      history.push(PATH_PHOTOS);
+    } else {
+      const message = response.message ? response.message : UPDATE_FAILED;
+      showOk({ title: NOTIFICATION, content: message });
     }
     dispatch(showLoading(false));
   };
