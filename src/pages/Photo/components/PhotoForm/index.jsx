@@ -23,7 +23,6 @@ const LoadDataCategories = () => {
 
 const PhotoForm = (props) => {
   const { initialValues, isAddMode, onSubmit } = props;
-  console.log('initialValues', initialValues);
   const categoriesOption = LoadDataCategories();
 
   const validationSchema = Yup.object().shape({

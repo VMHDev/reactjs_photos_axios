@@ -94,7 +94,6 @@ export const useCategoryDelete = () => {
 
   const callback = async (params) => {
     try {
-      console.log('params', params);
       // Call api
       const response = await trackPromise(categoryApi.delete(params));
       // Update state

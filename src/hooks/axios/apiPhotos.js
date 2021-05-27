@@ -110,7 +110,6 @@ export const usePhotoDelete = () => {
 
   const callback = async (params) => {
     try {
-      console.log('params', params);
       // Call api
       const response = await trackPromise(photoApi.delete(params));
       // Update state
