@@ -41,9 +41,14 @@ export const useCategoryAdd = () => {
     try {
       // Call api
       const response = await trackPromise(categoryApi.add(params));
-      // Update state
+
       if (response?.data.success) {
-        const action = addCategory(response?.data.category);
+        // Remove info unnecessary
+        const data = (({ _id, name }) => ({ _id, name }))(
+          response?.data.category
+        );
+        // Update state
+        const action = addCategory(data);
         dispatch(action);
       }
       // Response

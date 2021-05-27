@@ -8,7 +8,7 @@ const addToLocalStorageArray = (key, value) => {
   let arr = existing ? JSON.parse(existing) : [];
 
   // Add new data to localStorage Array
-  arr.push(value);
+  arr.data.push(value);
 
   // Save back to localStorage
   localStorage.setItem(key, JSON.stringify(arr));

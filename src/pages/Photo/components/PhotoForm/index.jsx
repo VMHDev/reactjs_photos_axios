@@ -13,7 +13,7 @@ const LoadDataCategories = () => {
   let categoriesOption = [];
   for (let item of categories) {
     const itemOptions = {
-      value: item.id,
+      value: item._id,
       label: item.name,
     };
     categoriesOption.push(itemOptions);

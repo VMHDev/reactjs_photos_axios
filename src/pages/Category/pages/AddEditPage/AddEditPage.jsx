@@ -61,6 +61,7 @@ const AddEditPage = (props) => {
       }
     } catch (error) {
       showOk({ title: NOTIFICATION, content: ERROR_GENERAL });
+      dispatch(showLoading(false));
       console.log(error);
     }
 
