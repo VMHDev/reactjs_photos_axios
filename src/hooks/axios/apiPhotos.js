@@ -29,6 +29,30 @@ export const usePhotoGetAll = () => {
   return [callback];
 };
 
+export const usePhotoPublic = () => {
+  const dispatch = useDispatch();
+
+  const callback = async () => {
+    try {
+      // Call api
+      const response = await trackPromise(photoApi.getPublic());
+      // Update state
+      if (response?.data.success) {
+        const data = response?.data.photos ? response?.data.photos : [];
+        dispatch(setPhoto(data));
+      }
+      // Response
+      await trackPromise(timeout(1000));
+      return response?.data;
+    } catch (error) {
+      return error.response.data
+        ? error.response.data
+        : { success: false, message: 'Server error' };
+    }
+  };
+  return [callback];
+};
+
 export const usePhotoGetByUser = () => {
   const dispatch = useDispatch();
 

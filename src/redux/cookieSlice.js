@@ -63,6 +63,9 @@ const user_cookies = createSlice({
       state.token = action.payload;
       // Update cookie
       removeValueFromCookies([COOKIES_USERLOGIN_NAME, COOKIES_TOKEN_NAME]);
+      // Remove data in local storage
+      localStorage.removeItem('photos');
+      localStorage.removeItem('categories');
     },
   },
 });

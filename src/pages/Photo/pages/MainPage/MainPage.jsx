@@ -9,7 +9,11 @@ import ModalYesNoCancel from 'components/Modal/ModalYesNoCancel';
 import PhotoList from 'pages/Photo/components/PhotoList';
 import useShowOk from 'hooks/modal/useShowOk';
 import useShowYesNoCancel from 'hooks/modal/useShowYesNoCancel';
-import { usePhotoDelete, usePhotoGetByUser } from 'hooks/axios/apiPhotos';
+import {
+  usePhotoDelete,
+  usePhotoGetByUser,
+  usePhotoPublic,
+} from 'hooks/axios/apiPhotos';
 
 import { PATH_PHOTOS, PATH_PHOTOS_ADD, PATH_USER_LOGIN } from 'constants/route';
 import {
@@ -35,13 +39,25 @@ const MainPage = (props) => {
 
   // Get photo by user
   const [apiPhotoGetByUser] = usePhotoGetByUser();
+  const [apiPhotoPublic] = usePhotoPublic();
   useEffect(() => {
     const callApi = async () => {
-      // Call API
-      const response = await apiPhotoGetByUser(userLogin._id);
-      if (response.success) {
-        const data = response.photos ? response.photos : [];
-        setPhotos(data);
+      try {
+        if (userLogin) {
+          const response = await apiPhotoGetByUser(userLogin?._id);
+          if (response?.success) {
+            const data = response.photos ? response.photos : [];
+            setPhotos(data);
+          }
+        } else {
+          const response = await apiPhotoPublic();
+          if (response?.success) {
+            const data = response.photos ? response.photos : [];
+            setPhotos(data);
+          }
+        }
+      } catch (error) {
+        console.log(error);
       }
     };
     if (photosState?.length === 0) {
