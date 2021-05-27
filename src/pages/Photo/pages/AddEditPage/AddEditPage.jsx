@@ -65,12 +65,10 @@ const AddEditPage = (props) => {
   const [apiPhotoUpdate] = usePhotoUpdate();
 
   const handleSubmit = async (values) => {
-    console.log('values', values);
     dispatch(showLoading(true));
     let response = null;
     try {
       const data = { ...values, userId: userLogin._id };
-      console.log('data', data);
       if (isAddMode) {
         response = await apiPhotoAdd(data);
       } else {
@@ -80,7 +78,6 @@ const AddEditPage = (props) => {
       showOk({ title: NOTIFICATION, content: ERROR_GENERAL });
       console.log(error);
     }
-    console.log('response', response);
     // Handle response
     if (response?.success) {
       history.push(PATH_PHOTOS);

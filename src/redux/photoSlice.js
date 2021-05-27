@@ -4,7 +4,7 @@ import { addToLocalStorageArray } from 'utils/helper';
 
 const initPhotos = () => {
   const photos = localStorage.getItem('photos');
-  if (photos) {
+  if (photos.data) {
     return JSON.parse(photos);
   } else {
     return { data: [] };
@@ -31,7 +31,7 @@ const photo = createSlice({
     },
     removePhoto: (state, action) => {
       const removePhotoId = action.payload;
-      state = state.data.filter((photo) => photo._id !== removePhotoId);
+      state.data = state.data.filter((photo) => photo._id !== removePhotoId);
 
       // Store local storage
       localStorage.setItem('photos', JSON.stringify(state));

@@ -44,7 +44,7 @@ const MainPage = (props) => {
         setPhotos(data);
       }
     };
-    if (photosState.length === 0) {
+    if (photosState?.length === 0) {
       callApi();
     } else {
       setPhotos(photosState);
