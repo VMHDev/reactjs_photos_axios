@@ -72,7 +72,7 @@ const PhotoForm = (props) => {
             <FastField name='path' component={RandomPhotoField} label='Photo' />
 
             <FastField
-              name='isPublic'
+              name='is_public'
               component={CheckboxField}
               label='Public'
             />

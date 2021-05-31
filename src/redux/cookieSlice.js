@@ -60,6 +60,10 @@ const user_cookies = createSlice({
         setValueToCookies(COOKIES_TOKEN_NAME, JSON.stringify(token), {
           expires: parseInt(COOKIES_EXPIRE),
         });
+
+        // Remove data in local storage
+        localStorage.removeItem('photos');
+        localStorage.removeItem('categories');
       }
     },
     removeLogin: (state, action) => {
