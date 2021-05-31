@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Base64 } from 'js-base64';
 
 import { useLogin } from 'hooks/axios/apiAuths';
-import { addLogin, removeLogin } from 'redux/cookieSlice';
+import { removeLogin } from 'redux/cookieSlice';
 import { showLoading } from 'redux/appSlice';
 import LoginForm from 'pages/User/components/LoginForm';
 import Banner from 'components/Banner';
@@ -58,12 +58,8 @@ const LoginPage = (props) => {
         password: Base64.encode(values.password),
       });
 
-      // Update state
       message = response.message ? response.message : LOGIN_FAILED;
       if (response.success) {
-        dispatch(
-          addLogin({ user: response.user, token: response.accessToken })
-        );
         isSuccess = true;
       }
     } catch (error) {

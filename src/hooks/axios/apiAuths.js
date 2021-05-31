@@ -1,11 +1,40 @@
+import { useDispatch } from 'react-redux';
 import { trackPromise } from 'react-promise-tracker';
+
+import { addLogin } from 'redux/cookieSlice';
 import authApi from 'api/authApi';
 import { timeout } from 'utils/helper';
 
 export const useLogin = () => {
+  const dispatch = useDispatch();
+
   const callback = async (params) => {
     try {
+      // Call api
       const response = await trackPromise(authApi.login(params));
+
+      // Update state
+      if (response?.data.success) {
+        const userRes = response?.data.user ? response?.data.user : null;
+        const tokenRes = response?.data.accessToken
+          ? response?.data.accessToken
+          : null;
+
+        if (userRes && tokenRes) {
+          const { refresh_token, ...user } = userRes;
+          const token = {
+            accessToken: tokenRes,
+            refreshToken: refresh_token,
+          };
+          dispatch(addLogin({ user, token }));
+        } else {
+          return {
+            success: false,
+            message: 'Process failed! Please check again!',
+          };
+        }
+      }
+      // Response
       await trackPromise(timeout(1000));
       return response?.data;
     } catch (error) {

@@ -23,7 +23,7 @@ const initCookies = () => {
     return {
       userLogin: { ...objUserLogin, password: decryptPass },
       token: getValueFromCookies(COOKIES_TOKEN_NAME)
-        ? getValueFromCookies(COOKIES_TOKEN_NAME)
+        ? JSON.parse(getValueFromCookies(COOKIES_TOKEN_NAME))
         : null,
     };
   } else {
@@ -40,23 +40,27 @@ const user_cookies = createSlice({
   initialState,
   reducers: {
     addLogin: (state, action) => {
+      const user = action.payload.user ? action.payload.user : null;
+      const token = action.payload.token ? action.payload.token : null;
       // Update state
-      state.userLogin = action.payload.user;
-      state.token = action.payload.token;
+      state.userLogin = user;
+      state.token = token;
 
-      // Encrypt password
-      const objUserLogin = {
-        ...action.payload.user,
-        password: encryptWithAESTripleDES(action.payload.user.password),
-      };
+      if (user && token) {
+        // Encrypt password
+        const objUser = {
+          ...user,
+          password: encryptWithAESTripleDES(user.password),
+        };
 
-      // Update cookie
-      setValueToCookies(COOKIES_USERLOGIN_NAME, JSON.stringify(objUserLogin), {
-        expires: parseInt(COOKIES_EXPIRE),
-      });
-      setValueToCookies(COOKIES_TOKEN_NAME, action.payload.token, {
-        expires: parseInt(COOKIES_EXPIRE),
-      });
+        // Update cookie
+        setValueToCookies(COOKIES_USERLOGIN_NAME, JSON.stringify(objUser), {
+          expires: parseInt(COOKIES_EXPIRE),
+        });
+        setValueToCookies(COOKIES_TOKEN_NAME, JSON.stringify(token), {
+          expires: parseInt(COOKIES_EXPIRE),
+        });
+      }
     },
     removeLogin: (state, action) => {
       state.userLogin = action.payload;
