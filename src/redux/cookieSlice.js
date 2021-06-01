@@ -66,6 +66,20 @@ const user_cookies = createSlice({
         localStorage.removeItem('categories');
       }
     },
+    updateToken: (state, action) => {
+      console.log('action.payload', action.payload);
+      const token = action.payload.token ? action.payload.token : null;
+      // Update state
+      state.token = token;
+      // Update cookie
+      if (token) {
+        setValueToCookies(COOKIES_TOKEN_NAME, JSON.stringify(token), {
+          expires: parseInt(COOKIES_EXPIRE),
+        });
+      } else {
+        removeValueFromCookies([COOKIES_TOKEN_NAME]);
+      }
+    },
     removeLogin: (state, action) => {
       state.userLogin = action.payload;
       state.token = action.payload;
@@ -79,5 +93,5 @@ const user_cookies = createSlice({
 });
 
 const { reducer, actions } = user_cookies;
-export const { addLogin, removeLogin } = actions;
+export const { addLogin, updateToken, removeLogin } = actions;
 export default reducer;

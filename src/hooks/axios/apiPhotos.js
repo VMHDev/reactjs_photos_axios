@@ -3,7 +3,7 @@ import { trackPromise } from 'react-promise-tracker';
 
 import { setPhoto, addPhoto, updatePhoto, removePhoto } from 'redux/photoSlice';
 import photoApi from 'api/photoApi';
-import { timeout } from 'utils/helper';
+import { timeout, refreshAccessTokenExpire } from 'utils/helper';
 
 export const usePhotoGetAll = () => {
   const dispatch = useDispatch();
@@ -58,6 +58,8 @@ export const usePhotoGetByUser = () => {
 
   const callback = async (params) => {
     try {
+      // Refresh token when expire
+      await trackPromise(refreshAccessTokenExpire());
       // Call api
       const response = await trackPromise(
         photoApi.getByUser({ userId: params })
@@ -84,6 +86,8 @@ export const usePhotoAdd = () => {
 
   const callback = async (params) => {
     try {
+      // Refresh token when expire
+      await trackPromise(refreshAccessTokenExpire());
       // Call api
       const response = await trackPromise(photoApi.add(params));
       // Update state
@@ -109,6 +113,8 @@ export const usePhotoUpdate = () => {
 
   const callback = async (params) => {
     try {
+      // Refresh token when expire
+      await trackPromise(refreshAccessTokenExpire());
       // Call api
       const response = await trackPromise(photoApi.update(params));
       // Update state
@@ -134,6 +140,8 @@ export const usePhotoDelete = () => {
 
   const callback = async (params) => {
     try {
+      // Refresh token when expire
+      await trackPromise(refreshAccessTokenExpire());
       // Call api
       const response = await trackPromise(photoApi.delete(params));
       // Update state
