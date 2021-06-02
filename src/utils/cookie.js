@@ -1,6 +1,12 @@
 import Cookies from 'js-cookie';
 import { encryptWithAES, decryptWithAES } from 'utils/hash';
 
+/**
+ * Set Value Cookies
+ * @param {string} name Key Cookies
+ * @param {object} value Value Cookies
+ * @param {object} options Options
+ */
 export function setValueToCookies(name, value, options = null) {
   try {
     const encryptValue = encryptWithAES(value);
@@ -14,6 +20,10 @@ export function setValueToCookies(name, value, options = null) {
   }
 }
 
+/**
+ * Get Value Cookies
+ * @param {string} name Key Cookies
+ */
 export function getValueFromCookies(name) {
   try {
     if (Cookies.get(name)) {
@@ -25,6 +35,10 @@ export function getValueFromCookies(name) {
   }
 }
 
+/**
+ * Remove Value Cookies
+ * @param {string} names List Key Cookies
+ */
 export function removeValueFromCookies(names) {
   try {
     names.forEach((name) => {

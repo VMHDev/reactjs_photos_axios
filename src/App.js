@@ -6,14 +6,13 @@ import {
   Redirect,
 } from 'react-router-dom';
 import { Spinner } from 'reactstrap';
-import { useDispatch } from 'react-redux';
 
-import { removeLogin } from 'redux/cookieSlice';
 import Header from 'components/Header';
 import NotFound from 'components/NotFound';
 import { ModalOk } from 'components/Modal';
 import Loading from 'components/Loading';
 import useShowOk from 'hooks/modal/useShowOk';
+import { useLogout } from 'hooks/axios/apiAuths';
 
 // Constants
 import {
@@ -23,7 +22,7 @@ import {
   PATH_USER,
   PATH_NOTFOUND,
 } from './constants/route';
-import { NOTIFICATION, ERROR_GENERAL } from 'constants/modal';
+import { NOTIFICATION, ERROR_GENERAL, LOGOUT_FAILED } from 'constants/modal';
 
 // Styles
 import './App.scss';
@@ -40,14 +39,18 @@ const Home = React.lazy(() => import('./pages/Home/Home'));
 const User = React.lazy(() => import('./pages/User/User'));
 
 // Main
-function App() {
-  const dispatch = useDispatch();
+const App = () => {
   const [showOk] = useShowOk();
+  const [apiLogout] = useLogout();
   // Handle events
-  const handleLogoutClick = () => {
+  const handleLogoutClick = async () => {
     try {
-      dispatch(removeLogin(null));
-      return <Redirect to={PATH_HOME} />;
+      const response = await apiLogout();
+      if (response?.success) {
+        return <Redirect to={PATH_HOME} />;
+      } else {
+        showOk({ title: NOTIFICATION, content: LOGOUT_FAILED });
+      }
     } catch (error) {
       showOk({ title: NOTIFICATION, content: ERROR_GENERAL });
       console.log(error);
@@ -91,6 +94,6 @@ function App() {
       <ModalOk />
     </Fragment>
   );
-}
+};
 
 export default App;

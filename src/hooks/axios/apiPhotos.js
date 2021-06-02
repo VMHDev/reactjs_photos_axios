@@ -3,7 +3,7 @@ import { trackPromise } from 'react-promise-tracker';
 
 import { setPhoto, addPhoto, updatePhoto, removePhoto } from 'redux/photoSlice';
 import photoApi from 'api/photoApi';
-import { timeout } from 'utils/helper';
+import { timeout, refreshAccessTokenExpire } from 'utils/helper';
 
 export const usePhotoGetAll = () => {
   const dispatch = useDispatch();
@@ -29,15 +29,39 @@ export const usePhotoGetAll = () => {
   return [callback];
 };
 
+export const usePhotoPublic = () => {
+  const dispatch = useDispatch();
+
+  const callback = async () => {
+    try {
+      // Call api
+      const response = await trackPromise(photoApi.getPublic());
+      // Update state
+      if (response?.data.success) {
+        const data = response?.data.photos ? response?.data.photos : [];
+        dispatch(setPhoto(data));
+      }
+      // Response
+      await trackPromise(timeout(1000));
+      return response?.data;
+    } catch (error) {
+      return error.response.data
+        ? error.response.data
+        : { success: false, message: 'Server error' };
+    }
+  };
+  return [callback];
+};
+
 export const usePhotoGetByUser = () => {
   const dispatch = useDispatch();
 
   const callback = async (params) => {
     try {
+      // Refresh token when expire
+      await trackPromise(refreshAccessTokenExpire());
       // Call api
-      const response = await trackPromise(
-        photoApi.getByUser({ userId: params })
-      );
+      const response = await trackPromise(photoApi.getByUser());
       // Update state
       if (response?.data.success) {
         const data = response?.data.photos ? response?.data.photos : [];
@@ -60,6 +84,8 @@ export const usePhotoAdd = () => {
 
   const callback = async (params) => {
     try {
+      // Refresh token when expire
+      await trackPromise(refreshAccessTokenExpire());
       // Call api
       const response = await trackPromise(photoApi.add(params));
       // Update state
@@ -85,6 +111,8 @@ export const usePhotoUpdate = () => {
 
   const callback = async (params) => {
     try {
+      // Refresh token when expire
+      await trackPromise(refreshAccessTokenExpire());
       // Call api
       const response = await trackPromise(photoApi.update(params));
       // Update state
@@ -110,6 +138,8 @@ export const usePhotoDelete = () => {
 
   const callback = async (params) => {
     try {
+      // Refresh token when expire
+      await trackPromise(refreshAccessTokenExpire());
       // Call api
       const response = await trackPromise(photoApi.delete(params));
       // Update state

@@ -3,8 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Base64 } from 'js-base64';
 
-import { useLogin } from 'hooks/axios/apiAuths';
-import { addLogin, removeLogin } from 'redux/cookieSlice';
+import { useLogin, useLogout } from 'hooks/axios/apiAuths';
 import { showLoading } from 'redux/appSlice';
 import LoginForm from 'pages/User/components/LoginForm';
 import Banner from 'components/Banner';
@@ -19,7 +18,12 @@ import {
   PATH_PHOTOS_ADD,
   PATH_CATEGORIES_ADD,
 } from 'constants/route';
-import { NOTIFICATION, LOGIN_FAILED, ERROR_GENERAL } from 'constants/modal';
+import {
+  NOTIFICATION,
+  LOGIN_FAILED,
+  ERROR_GENERAL,
+  LOGOUT_FAILED,
+} from 'constants/modal';
 
 // Styles
 import './styles.scss';
@@ -32,6 +36,7 @@ const LoginPage = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [apiLogin] = useLogin();
+  const [apiLogout] = useLogout();
 
   const initialValues = {
     email: '',
@@ -39,9 +44,21 @@ const LoginPage = (props) => {
   };
 
   useEffect(() => {
+    const logout = async () => {
+      try {
+        const response = await apiLogout();
+        if (!response?.success) {
+          showOk({ title: NOTIFICATION, content: LOGOUT_FAILED });
+        }
+      } catch (error) {
+        showOk({ title: NOTIFICATION, content: ERROR_GENERAL });
+        console.log(error);
+      }
+    };
+
     if (userLogin) {
       //Logout
-      dispatch(removeLogin(null));
+      logout();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -58,12 +75,8 @@ const LoginPage = (props) => {
         password: Base64.encode(values.password),
       });
 
-      // Update state
       message = response.message ? response.message : LOGIN_FAILED;
       if (response.success) {
-        dispatch(
-          addLogin({ user: response.user, token: response.accessToken })
-        );
         isSuccess = true;
       }
     } catch (error) {

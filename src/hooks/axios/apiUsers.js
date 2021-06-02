@@ -1,6 +1,6 @@
 import { trackPromise } from 'react-promise-tracker';
 import userApi from 'api/userApi';
-import { timeout } from 'utils/helper';
+import { timeout, refreshAccessTokenExpire } from 'utils/helper';
 
 export const useGetById = () => {
   const callback = async (params) => {
@@ -53,6 +53,9 @@ export const useRegister = () => {
 export const useUserUpdate = () => {
   const callback = async (params) => {
     try {
+      // Refresh token when expire
+      await trackPromise(refreshAccessTokenExpire());
+      // Call API
       const response = await trackPromise(userApi.update(params));
       await trackPromise(timeout(1000));
       return response?.data;
