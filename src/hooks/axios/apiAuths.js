@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { trackPromise } from 'react-promise-tracker';
 
-import { addLogin } from 'redux/cookieSlice';
+import { addLogin, removeLogin } from 'redux/cookieSlice';
 import authApi from 'api/authApi';
 import { timeout } from 'utils/helper';
 
@@ -33,6 +33,29 @@ export const useLogin = () => {
             message: 'Process failed! Please check again!',
           };
         }
+      }
+      // Response
+      await trackPromise(timeout(1000));
+      return response?.data;
+    } catch (error) {
+      return error.response.data
+        ? error.response.data
+        : { success: false, message: 'Server error' };
+    }
+  };
+  return [callback];
+};
+
+export const useLogout = () => {
+  const dispatch = useDispatch();
+
+  const callback = async () => {
+    try {
+      // Call api
+      const response = await trackPromise(authApi.logout());
+      // Update state
+      if (response?.data.success) {
+        dispatch(removeLogin(null));
       }
       // Response
       await trackPromise(timeout(1000));

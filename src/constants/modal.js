@@ -7,6 +7,7 @@ export const ERROR_GENERAL = 'Something error! Please again!';
 export const DELETE_FAILED = 'Delete failed';
 export const DELETE_CONFIRM = 'Are you sure you want to delete this item?';
 export const LOGIN_FAILED = 'Login failed';
+export const LOGOUT_FAILED = 'Logout failed';
 export const REGISTER_SUCCESS = 'Register success';
 export const REGISTER_FAILED = 'Register failed';
 export const UPDATE_SUCCESS = 'Update success';
