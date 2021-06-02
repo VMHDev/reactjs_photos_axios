@@ -5,6 +5,7 @@ import { Button, FormGroup } from 'reactstrap';
 import { Formik, Form, FastField } from 'formik';
 import InputField from 'components/InputField';
 import SelectField from 'components/SelectField';
+import CheckboxField from 'components/CheckboxField';
 import RandomPhotoField from 'components/RandomPhotoField';
 import * as Yup from 'yup';
 
@@ -69,6 +70,12 @@ const PhotoForm = (props) => {
             />
 
             <FastField name='path' component={RandomPhotoField} label='Photo' />
+
+            <FastField
+              name='is_public'
+              component={CheckboxField}
+              label='Public'
+            />
 
             <FormGroup>
               <Button type='submit' color={isAddMode ? 'primary' : 'success'}>

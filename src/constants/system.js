@@ -30,10 +30,10 @@ export const TIME_ZONE = process.env.REACT_APP_TIME_ZONE
 export const PASS_PHRASE = process.env.REACT_APP_PASS_PHRASE
   ? process.env.REACT_APP_PASS_PHRASE
   : 'photos_vmhdev_hack';
-// Thời gian hết hạn của cookie (Đơn vị là phút)
+// Thời gian hết hạn của cookie (Đơn vị là ngày)
 export const COOKIES_EXPIRE = process.env.REACT_APP_COOKIES_EXPIRE
   ? process.env.REACT_APP_COOKIES_EXPIRE
-  : '3600';
+  : '1';
 // Tên của cookie token
 export const COOKIES_TOKEN_NAME = process.env.REACT_APP_COOKIES_TOKEN_NAME
   ? process.env.REACT_APP_COOKIES_TOKEN_NAME

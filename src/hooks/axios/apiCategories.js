@@ -8,7 +8,7 @@ import {
   removeCategory,
 } from 'redux/categorySlice';
 import categoryApi from 'api/categoryApi';
-import { timeout } from 'utils/helper';
+import { timeout, refreshAccessTokenExpire } from 'utils/helper';
 
 export const useCategoryGetAll = () => {
   const dispatch = useDispatch();
@@ -39,9 +39,10 @@ export const useCategoryAdd = () => {
 
   const callback = async (params) => {
     try {
+      // Refresh token when expire
+      await trackPromise(refreshAccessTokenExpire());
       // Call api
       const response = await trackPromise(categoryApi.add(params));
-
       if (response?.data.success) {
         // Remove info unnecessary
         const data = (({ _id, name }) => ({ _id, name }))(
@@ -69,6 +70,8 @@ export const useCategoryUpdate = () => {
 
   const callback = async (params) => {
     try {
+      // Refresh token when expire
+      await trackPromise(refreshAccessTokenExpire());
       // Call api
       const response = await trackPromise(categoryApi.update(params));
       // Update state
@@ -94,6 +97,8 @@ export const useCategoryDelete = () => {
 
   const callback = async (params) => {
     try {
+      // Refresh token when expire
+      await trackPromise(refreshAccessTokenExpire());
       // Call api
       const response = await trackPromise(categoryApi.delete(params));
       // Update state

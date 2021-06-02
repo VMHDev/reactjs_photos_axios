@@ -1,7 +1,10 @@
 import CryptoJS from 'crypto-js';
 import { PASS_PHRASE } from 'constants/system';
 
-// Mã hóa một lớp
+/**
+ * Encrypt AES
+ * @param {string} text Text
+ */
 export const encryptWithAES = (text) => {
   try {
     return CryptoJS.AES.encrypt(text, PASS_PHRASE).toString();
@@ -10,7 +13,10 @@ export const encryptWithAES = (text) => {
   }
 };
 
-// Giải mã một lớp
+/**
+ * Decrypt AES
+ * @param {string} text Text
+ */
 export const decryptWithAES = (ciphertext) => {
   try {
     const bytes = CryptoJS.AES.decrypt(ciphertext, PASS_PHRASE);
@@ -21,7 +27,10 @@ export const decryptWithAES = (ciphertext) => {
   }
 };
 
-// Mã hóa hai lớp
+/**
+ * Encrypt AES and TripleDES
+ * @param {string} text Text
+ */
 export const encryptWithAESTripleDES = (text) => {
   try {
     const textTripleDES = CryptoJS.TripleDES.encrypt(
@@ -34,7 +43,10 @@ export const encryptWithAESTripleDES = (text) => {
   }
 };
 
-// Giải mã hai lớp
+/**
+ * Decrypt AES and TripleDES
+ * @param {string} text Text
+ */
 export const decryptWithAESTripleDES = (ciphertext) => {
   try {
     const bytes = CryptoJS.TripleDES.decrypt(ciphertext, PASS_PHRASE);

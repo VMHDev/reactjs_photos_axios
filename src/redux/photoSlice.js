@@ -4,8 +4,9 @@ import { addToLocalStorageArray } from 'utils/helper';
 
 const initPhotos = () => {
   const photos = localStorage.getItem('photos');
-  if (photos.data) {
-    return JSON.parse(photos);
+  const dataPhotos = photos ? JSON.parse(photos) : null;
+  if (dataPhotos?.data) {
+    return dataPhotos;
   } else {
     return { data: [] };
   }

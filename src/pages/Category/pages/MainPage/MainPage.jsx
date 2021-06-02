@@ -46,7 +46,7 @@ const MainPage = (props) => {
     const callApi = async () => {
       // Call API
       const response = await apiCategoryGetAll();
-      if (response.success) {
+      if (response?.success) {
         const data = response.categories ? response.categories : [];
         setCategories(data);
       }

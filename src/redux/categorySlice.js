@@ -4,8 +4,9 @@ import { addToLocalStorageArray } from 'utils/helper';
 
 const initCategories = () => {
   const categories = localStorage.getItem('categories');
-  if (categories.data) {
-    return JSON.parse(categories);
+  const dataCategories = categories ? JSON.parse(categories) : null;
+  if (dataCategories?.data) {
+    return dataCategories;
   } else {
     return { data: [] };
   }
