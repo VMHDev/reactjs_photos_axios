@@ -61,9 +61,7 @@ export const usePhotoGetByUser = () => {
       // Refresh token when expire
       await trackPromise(refreshAccessTokenExpire());
       // Call api
-      const response = await trackPromise(
-        photoApi.getByUser({ userId: params })
-      );
+      const response = await trackPromise(photoApi.getByUser());
       // Update state
       if (response?.data.success) {
         const data = response?.data.photos ? response?.data.photos : [];

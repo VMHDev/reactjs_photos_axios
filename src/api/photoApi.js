@@ -8,9 +8,9 @@ const photoApi = {
     const url = '/photo/public';
     return axiosClient.get(url);
   },
-  getByUser: (data) => {
+  getByUser: () => {
     const url = '/photo/user';
-    return axiosClient.post(url, data);
+    return axiosClient.get(url);
   },
   add: (data) => {
     const url = '/photo';

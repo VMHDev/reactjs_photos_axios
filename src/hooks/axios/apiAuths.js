@@ -3,7 +3,7 @@ import { trackPromise } from 'react-promise-tracker';
 
 import { addLogin, removeLogin } from 'redux/cookieSlice';
 import authApi from 'api/authApi';
-import { timeout } from 'utils/helper';
+import { timeout, refreshAccessTokenExpire } from 'utils/helper';
 
 export const useLogin = () => {
   const dispatch = useDispatch();
@@ -51,6 +51,8 @@ export const useLogout = () => {
 
   const callback = async () => {
     try {
+      // Refresh token when expire
+      await trackPromise(refreshAccessTokenExpire());
       // Call api
       const response = await trackPromise(authApi.logout());
       // Update state
