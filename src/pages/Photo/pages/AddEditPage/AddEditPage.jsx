@@ -11,6 +11,7 @@ import useShowOk from 'hooks/modal/useShowOk';
 // Constants
 import { PATH_PHOTOS } from 'constants/route';
 import { NOTIFICATION, ERROR_GENERAL, UPDATE_FAILED } from 'constants/modal';
+import { IS_REFRESH_TOKEN_FAIL } from 'constants/other';
 
 // Styles
 import './styles.scss';
@@ -84,8 +85,10 @@ const AddEditPage = (props) => {
     if (response?.success) {
       history.push(PATH_PHOTOS);
     } else {
-      const message = response.message ? response.message : UPDATE_FAILED;
-      showOk({ title: NOTIFICATION, content: message });
+      if (response?.message !== IS_REFRESH_TOKEN_FAIL) {
+        const message = response.message ? response.message : UPDATE_FAILED;
+        showOk({ title: NOTIFICATION, content: message });
+      }
     }
     dispatch(showLoading(false));
   };

@@ -5,6 +5,8 @@ import { setPhoto, addPhoto, updatePhoto, removePhoto } from 'redux/photoSlice';
 import photoApi from 'api/photoApi';
 import { timeout, refreshAccessTokenExpire } from 'utils/helper';
 
+import { IS_REFRESH_TOKEN_FAIL } from 'constants/other';
+
 export const usePhotoGetAll = () => {
   const dispatch = useDispatch();
 
@@ -60,7 +62,7 @@ export const usePhotoGetByUser = () => {
     try {
       // Refresh token when expire
       if (!(await trackPromise(refreshAccessTokenExpire()))) {
-        return;
+        return { success: false, message: IS_REFRESH_TOKEN_FAIL };
       }
       // Call api
       const response = await trackPromise(photoApi.getByUser());
@@ -88,7 +90,7 @@ export const usePhotoAdd = () => {
     try {
       // Refresh token when expire
       if (!(await trackPromise(refreshAccessTokenExpire()))) {
-        return;
+        return { success: false, message: IS_REFRESH_TOKEN_FAIL };
       }
       // Call api
       const response = await trackPromise(photoApi.add(params));
@@ -117,7 +119,7 @@ export const usePhotoUpdate = () => {
     try {
       // Refresh token when expire
       if (!(await trackPromise(refreshAccessTokenExpire()))) {
-        return;
+        return { success: false, message: IS_REFRESH_TOKEN_FAIL };
       }
       // Call api
       const response = await trackPromise(photoApi.update(params));
@@ -146,7 +148,7 @@ export const usePhotoDelete = () => {
     try {
       // Refresh token when expire
       if (!(await trackPromise(refreshAccessTokenExpire()))) {
-        return;
+        return { success: false, message: IS_REFRESH_TOKEN_FAIL };
       }
       // Call api
       const response = await trackPromise(photoApi.delete(params));

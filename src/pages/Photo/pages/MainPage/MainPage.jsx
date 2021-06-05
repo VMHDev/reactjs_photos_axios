@@ -24,6 +24,7 @@ import {
   ERROR_GENERAL,
 } from 'constants/modal';
 import Images from 'constants/images';
+import { IS_REFRESH_TOKEN_FAIL } from 'constants/other';
 
 const MainPage = (props) => {
   const history = useHistory();
@@ -48,12 +49,26 @@ const MainPage = (props) => {
           if (response?.success) {
             const data = response.photos ? response.photos : [];
             setPhotos(data);
+          } else {
+            if (response?.message === IS_REFRESH_TOKEN_FAIL) {
+              history.push({
+                pathname: PATH_USER_LOGIN,
+                state: { type: 'Photo_Edit' },
+              });
+            }
           }
         } else {
           const response = await apiPhotoPublic();
           if (response?.success) {
             const data = response.photos ? response.photos : [];
             setPhotos(data);
+          } else {
+            if (response?.message === IS_REFRESH_TOKEN_FAIL) {
+              history.push({
+                pathname: PATH_USER_LOGIN,
+                state: { type: 'Photo_Edit' },
+              });
+            }
           }
         }
       } catch (error) {
@@ -99,10 +114,10 @@ const MainPage = (props) => {
       // Call API
       const response = await apiPhotoDelete(photoSelected._id);
       if (!response.success) {
-        showOk({
-          title: NOTIFICATION,
-          content: response.message ? response.message : DELETE_FAILED,
-        });
+        if (response?.message !== IS_REFRESH_TOKEN_FAIL) {
+          const message = response.message ? response.message : DELETE_FAILED;
+          showOk({ title: NOTIFICATION, content: message });
+        }
       }
     } catch (error) {
       showOk({ title: NOTIFICATION, content: ERROR_GENERAL });

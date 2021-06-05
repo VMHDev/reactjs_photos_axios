@@ -1,4 +1,5 @@
 import React, { Suspense, Fragment } from 'react';
+import { useSelector } from 'react-redux';
 import {
   BrowserRouter as Router,
   Route,
@@ -23,6 +24,7 @@ import {
   PATH_NOTFOUND,
 } from './constants/route';
 import { NOTIFICATION, ERROR_GENERAL, LOGOUT_FAILED } from 'constants/modal';
+import { IS_REFRESH_TOKEN_FAIL } from 'constants/other';
 
 // Styles
 import './App.scss';
@@ -42,15 +44,18 @@ const User = React.lazy(() => import('./pages/User/User'));
 const App = () => {
   const [showOk] = useShowOk();
   const [apiLogout] = useLogout();
+  const userLogin = useSelector((state) => state.cookies.userLogin);
 
   // Handle events
   const handleLogoutClick = async () => {
     try {
-      const response = await apiLogout();
+      const response = await apiLogout({ userId: userLogin._id });
       if (response?.success) {
         return <Redirect to={PATH_HOME} />;
       } else {
-        showOk({ title: NOTIFICATION, content: LOGOUT_FAILED });
+        if (response?.message !== IS_REFRESH_TOKEN_FAIL) {
+          showOk({ title: NOTIFICATION, content: LOGOUT_FAILED });
+        }
       }
     } catch (error) {
       showOk({ title: NOTIFICATION, content: ERROR_GENERAL });

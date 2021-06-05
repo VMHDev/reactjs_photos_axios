@@ -12,6 +12,7 @@ import { useUserUpdate } from 'hooks/axios/apiUsers';
 import Images from 'constants/images';
 import { PATH_USER_LOGIN } from 'constants/route';
 import { NOTIFICATION, ERROR_GENERAL, PROCESS_FAILED } from 'constants/modal';
+import { IS_REFRESH_TOKEN_FAIL } from 'constants/other';
 
 // Styles
 import './styles.scss';
@@ -45,11 +46,14 @@ const Account = (props) => {
       let objUser = { ...values };
 
       const response = await apiUserUpdate(objUser);
-      const message = response.message ? response.message : PROCESS_FAILED;
+
       if (response.success) {
         history.push(PATH_USER_LOGIN);
       } else {
-        showOk({ title: NOTIFICATION, content: message });
+        const message = response.message ? response.message : PROCESS_FAILED;
+        if (response?.message !== IS_REFRESH_TOKEN_FAIL) {
+          showOk({ title: NOTIFICATION, content: message });
+        }
       }
     } catch (error) {
       showOk({ title: NOTIFICATION, content: ERROR_GENERAL });

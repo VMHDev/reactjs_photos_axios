@@ -2,6 +2,8 @@ import { trackPromise } from 'react-promise-tracker';
 import userApi from 'api/userApi';
 import { timeout, refreshAccessTokenExpire } from 'utils/helper';
 
+import { IS_REFRESH_TOKEN_FAIL } from 'constants/other';
+
 export const useGetById = () => {
   const callback = async (params) => {
     try {
@@ -55,7 +57,7 @@ export const useUserUpdate = () => {
     try {
       // Refresh token when expire
       if (!(await trackPromise(refreshAccessTokenExpire()))) {
-        return;
+        return { success: false, message: IS_REFRESH_TOKEN_FAIL };
       }
       // Call API
       const response = await trackPromise(userApi.update(params));

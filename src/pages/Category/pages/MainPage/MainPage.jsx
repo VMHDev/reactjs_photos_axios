@@ -27,6 +27,7 @@ import {
   ERROR_GENERAL,
 } from 'constants/modal';
 import Images from 'constants/images';
+import { IS_REFRESH_TOKEN_FAIL } from 'constants/other';
 
 const MainPage = (props) => {
   const history = useHistory();
@@ -93,10 +94,10 @@ const MainPage = (props) => {
       // Call API
       const response = await apiCategoryDelete(categorySelected._id);
       if (!response.success) {
-        showOk({
-          title: NOTIFICATION,
-          content: response.message ? response.message : DELETE_FAILED,
-        });
+        if (response?.message !== IS_REFRESH_TOKEN_FAIL) {
+          const message = response.message ? response.message : DELETE_FAILED;
+          showOk({ title: NOTIFICATION, content: message });
+        }
       }
     } catch (error) {
       showOk({ title: NOTIFICATION, content: ERROR_GENERAL });

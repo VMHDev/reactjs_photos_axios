@@ -48,12 +48,13 @@ const timeout = (ms) => {
 const refreshAccessTokenExpire = async () => {
   try {
     const token = store.getState().cookies?.token;
+
     if (token?.accessToken) {
       const decoded = jwt.decode(token?.accessToken);
       const timeExp = momenttimezone.unix(decoded.exp);
 
       if (!isExpire(timeExp)) {
-        return false;
+        return true;
       }
       const response = await authApi.refreshToken({
         refreshToken: token?.refreshToken,
