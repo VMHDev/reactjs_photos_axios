@@ -40,7 +40,9 @@ export const useCategoryAdd = () => {
   const callback = async (params) => {
     try {
       // Refresh token when expire
-      await trackPromise(refreshAccessTokenExpire());
+      if (!(await trackPromise(refreshAccessTokenExpire()))) {
+        return;
+      }
       // Call api
       const response = await trackPromise(categoryApi.add(params));
       if (response?.data.success) {
@@ -71,7 +73,9 @@ export const useCategoryUpdate = () => {
   const callback = async (params) => {
     try {
       // Refresh token when expire
-      await trackPromise(refreshAccessTokenExpire());
+      if (!(await trackPromise(refreshAccessTokenExpire()))) {
+        return;
+      }
       // Call api
       const response = await trackPromise(categoryApi.update(params));
       // Update state
@@ -98,7 +102,9 @@ export const useCategoryDelete = () => {
   const callback = async (params) => {
     try {
       // Refresh token when expire
-      await trackPromise(refreshAccessTokenExpire());
+      if (!(await trackPromise(refreshAccessTokenExpire()))) {
+        return;
+      }
       // Call api
       const response = await trackPromise(categoryApi.delete(params));
       // Update state

@@ -54,7 +54,9 @@ export const useUserUpdate = () => {
   const callback = async (params) => {
     try {
       // Refresh token when expire
-      await trackPromise(refreshAccessTokenExpire());
+      if (!(await trackPromise(refreshAccessTokenExpire()))) {
+        return;
+      }
       // Call API
       const response = await trackPromise(userApi.update(params));
       await trackPromise(timeout(1000));

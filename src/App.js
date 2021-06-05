@@ -42,6 +42,7 @@ const User = React.lazy(() => import('./pages/User/User'));
 const App = () => {
   const [showOk] = useShowOk();
   const [apiLogout] = useLogout();
+
   // Handle events
   const handleLogoutClick = async () => {
     try {

@@ -47,7 +47,7 @@ const LoginPage = (props) => {
     const logout = async () => {
       try {
         const response = await apiLogout();
-        if (!response?.success) {
+        if (!response?.success && response?.message) {
           showOk({ title: NOTIFICATION, content: LOGOUT_FAILED });
         }
       } catch (error) {

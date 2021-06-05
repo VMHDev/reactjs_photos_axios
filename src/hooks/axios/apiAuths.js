@@ -52,7 +52,9 @@ export const useLogout = () => {
   const callback = async () => {
     try {
       // Refresh token when expire
-      await trackPromise(refreshAccessTokenExpire());
+      if (!(await trackPromise(refreshAccessTokenExpire()))) {
+        return { success: false, message: null };
+      }
       // Call api
       const response = await trackPromise(authApi.logout());
       // Update state

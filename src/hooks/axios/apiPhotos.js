@@ -59,7 +59,9 @@ export const usePhotoGetByUser = () => {
   const callback = async (params) => {
     try {
       // Refresh token when expire
-      await trackPromise(refreshAccessTokenExpire());
+      if (!(await trackPromise(refreshAccessTokenExpire()))) {
+        return;
+      }
       // Call api
       const response = await trackPromise(photoApi.getByUser());
       // Update state
@@ -85,7 +87,9 @@ export const usePhotoAdd = () => {
   const callback = async (params) => {
     try {
       // Refresh token when expire
-      await trackPromise(refreshAccessTokenExpire());
+      if (!(await trackPromise(refreshAccessTokenExpire()))) {
+        return;
+      }
       // Call api
       const response = await trackPromise(photoApi.add(params));
       // Update state
@@ -112,7 +116,9 @@ export const usePhotoUpdate = () => {
   const callback = async (params) => {
     try {
       // Refresh token when expire
-      await trackPromise(refreshAccessTokenExpire());
+      if (!(await trackPromise(refreshAccessTokenExpire()))) {
+        return;
+      }
       // Call api
       const response = await trackPromise(photoApi.update(params));
       // Update state
@@ -139,7 +145,9 @@ export const usePhotoDelete = () => {
   const callback = async (params) => {
     try {
       // Refresh token when expire
-      await trackPromise(refreshAccessTokenExpire());
+      if (!(await trackPromise(refreshAccessTokenExpire()))) {
+        return;
+      }
       // Call api
       const response = await trackPromise(photoApi.delete(params));
       // Update state
