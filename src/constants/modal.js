@@ -24,3 +24,4 @@ export const PROCESS_FAILED = 'Process failed';
 export const PASSWORD_INVALID = 'Password invalid';
 
 export const PLEASE_LOGIN = 'Session timeout! Please login!';
+export const DONT_PERMISSION = "Don't permission";

@@ -25,6 +25,7 @@ import {
   DELETE_FAILED,
   DELETE_CONFIRM,
   ERROR_GENERAL,
+  DONT_PERMISSION,
 } from 'constants/modal';
 import Images from 'constants/images';
 import { IS_REFRESH_TOKEN_FAIL } from 'constants/other';
@@ -63,7 +64,11 @@ const MainPage = (props) => {
   // Hander Events
   const handleCategoryEditClick = (category) => {
     if (userLogin) {
-      history.push(PATH_CATEGORIES + category._id);
+      if (userLogin.permission === 1) {
+        history.push(PATH_CATEGORIES + category._id);
+      } else {
+        showOk({ title: NOTIFICATION, content: DONT_PERMISSION });
+      }
     } else {
       history.push({
         pathname: PATH_USER_LOGIN,
@@ -74,11 +79,15 @@ const MainPage = (props) => {
 
   const handleCategoryRemoveClick = (category) => {
     if (userLogin) {
-      setCategorySelected(category);
-      showYesNoCancel({
-        title: CONFIRM,
-        content: DELETE_CONFIRM,
-      });
+      if (userLogin.permission === 1) {
+        setCategorySelected(category);
+        showYesNoCancel({
+          title: CONFIRM,
+          content: DELETE_CONFIRM,
+        });
+      } else {
+        showOk({ title: NOTIFICATION, content: DONT_PERMISSION });
+      }
     } else {
       history.push({
         pathname: PATH_USER_LOGIN,
