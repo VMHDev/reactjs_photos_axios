@@ -72,11 +72,13 @@ const Header = (props) => {
                   Change password
                 </Link>
               </DropdownItem>
-              <DropdownItem>
-                <Link to={PATH_USER_PERMISSION} className='header__link'>
-                  Permission
-                </Link>
-              </DropdownItem>
+              {userLogin.permission !== 0 && (
+                <DropdownItem>
+                  <Link to={PATH_USER_PERMISSION} className='header__link'>
+                    Permission
+                  </Link>
+                </DropdownItem>
+              )}
               <DropdownItem>
                 <Link to='' onClick={onLogoutClick} className='header__link'>
                   Logout

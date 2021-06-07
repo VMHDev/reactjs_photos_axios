@@ -32,7 +32,7 @@ const Permission = (props) => {
     if (response?.success) {
       const data = response.users ? response.users : [];
       data.forEach((user) => {
-        user.isAdmin = user.permission === 1 ? true : false;
+        user.isAdmin = user.permission !== 0 ? true : false;
       });
       setUsers(data);
     }

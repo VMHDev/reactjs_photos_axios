@@ -64,7 +64,7 @@ const MainPage = (props) => {
   // Hander Events
   const handleCategoryEditClick = (category) => {
     if (userLogin) {
-      if (userLogin.permission === 1) {
+      if (userLogin.permission !== 0) {
         history.push(PATH_CATEGORIES + category._id);
       } else {
         showOk({ title: NOTIFICATION, content: DONT_PERMISSION });
@@ -79,7 +79,7 @@ const MainPage = (props) => {
 
   const handleCategoryRemoveClick = (category) => {
     if (userLogin) {
-      if (userLogin.permission === 1) {
+      if (userLogin.permission !== 0) {
         setCategorySelected(category);
         showYesNoCancel({
           title: CONFIRM,
