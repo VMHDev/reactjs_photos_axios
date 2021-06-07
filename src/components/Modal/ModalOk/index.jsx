@@ -3,7 +3,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { useSelector } from 'react-redux';
 import './styles.scss';
 
-const ModalOk = (props) => {
+const ModalOk = () => {
   const modalOk = useSelector((state) => state.app.modalOk || {});
   const [isShowDialog, setIsShowDialog] = useState(false);
 

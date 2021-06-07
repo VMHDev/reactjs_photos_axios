@@ -67,7 +67,6 @@ const user_cookies = createSlice({
       }
     },
     updateToken: (state, action) => {
-      console.log('action.payload', action.payload);
       const token = action.payload.token ? action.payload.token : null;
       // Update state
       state.token = token;

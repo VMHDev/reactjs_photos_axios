@@ -23,7 +23,9 @@ import {
   LOGIN_FAILED,
   ERROR_GENERAL,
   LOGOUT_FAILED,
+  PLEASE_LOGIN,
 } from 'constants/modal';
+import { IS_REFRESH_TOKEN_FAIL } from 'constants/other';
 
 // Styles
 import './styles.scss';
@@ -32,6 +34,7 @@ import './styles.scss';
 const LoginPage = (props) => {
   const [showOk] = useShowOk();
   const userLogin = useSelector((state) => state.cookies.userLogin);
+  const isPleaseLogin = useSelector((state) => state.app.isPleaseLogin);
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -46,8 +49,8 @@ const LoginPage = (props) => {
   useEffect(() => {
     const logout = async () => {
       try {
-        const response = await apiLogout();
-        if (!response?.success) {
+        const response = await apiLogout({ userId: userLogin._id });
+        if (!response?.success && response?.message !== IS_REFRESH_TOKEN_FAIL) {
           showOk({ title: NOTIFICATION, content: LOGOUT_FAILED });
         }
       } catch (error) {
@@ -56,12 +59,19 @@ const LoginPage = (props) => {
       }
     };
 
+    // Logout when logined
     if (userLogin) {
-      //Logout
       logout();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (isPleaseLogin) {
+      showOk({ title: NOTIFICATION, content: PLEASE_LOGIN });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPleaseLogin]);
 
   // Handle events
   const handleSubmitLogin = async (values) => {

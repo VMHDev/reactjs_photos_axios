@@ -19,6 +19,7 @@ import Images from 'constants/images';
 import { PATH_USER_LOGIN } from 'constants/route';
 import { PASSWORD_RESET_TOKEN_EXPIRE, TIME_ZONE } from 'constants/system';
 import { NOTIFICATION, PROCESS_FAILED, ERROR_GENERAL } from 'constants/modal';
+import { IS_REFRESH_TOKEN_FAIL } from 'constants/other';
 
 // Styles
 import './styles.scss';
@@ -90,11 +91,14 @@ const ResetPassword = (props) => {
       delete objUser.confirmPassword;
       objUser.password = Base64.encode(objUser.password);
       const response = await apiUserUpdate(objUser);
-      const message = response.message ? response.message : PROCESS_FAILED;
+
       if (response.success) {
         history.push(PATH_USER_LOGIN);
       } else {
-        showOk({ title: NOTIFICATION, content: message });
+        const message = response.message ? response.message : PROCESS_FAILED;
+        if (response?.message !== IS_REFRESH_TOKEN_FAIL) {
+          showOk({ title: NOTIFICATION, content: message });
+        }
       }
     } catch (error) {
       showOk({ title: NOTIFICATION, content: ERROR_GENERAL });

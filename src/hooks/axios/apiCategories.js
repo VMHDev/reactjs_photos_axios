@@ -10,6 +10,8 @@ import {
 import categoryApi from 'api/categoryApi';
 import { timeout, refreshAccessTokenExpire } from 'utils/helper';
 
+import { IS_REFRESH_TOKEN_FAIL } from 'constants/other';
+
 export const useCategoryGetAll = () => {
   const dispatch = useDispatch();
 
@@ -40,7 +42,9 @@ export const useCategoryAdd = () => {
   const callback = async (params) => {
     try {
       // Refresh token when expire
-      await trackPromise(refreshAccessTokenExpire());
+      if (!(await trackPromise(refreshAccessTokenExpire()))) {
+        return { success: false, message: IS_REFRESH_TOKEN_FAIL };
+      }
       // Call api
       const response = await trackPromise(categoryApi.add(params));
       if (response?.data.success) {
@@ -71,7 +75,9 @@ export const useCategoryUpdate = () => {
   const callback = async (params) => {
     try {
       // Refresh token when expire
-      await trackPromise(refreshAccessTokenExpire());
+      if (!(await trackPromise(refreshAccessTokenExpire()))) {
+        return { success: false, message: IS_REFRESH_TOKEN_FAIL };
+      }
       // Call api
       const response = await trackPromise(categoryApi.update(params));
       // Update state
@@ -98,7 +104,9 @@ export const useCategoryDelete = () => {
   const callback = async (params) => {
     try {
       // Refresh token when expire
-      await trackPromise(refreshAccessTokenExpire());
+      if (!(await trackPromise(refreshAccessTokenExpire()))) {
+        return { success: false, message: IS_REFRESH_TOKEN_FAIL };
+      }
       // Call api
       const response = await trackPromise(categoryApi.delete(params));
       // Update state

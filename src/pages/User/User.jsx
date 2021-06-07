@@ -10,6 +10,7 @@ import {
   PATH_FORGOTPASSWORD,
   PATH_RESETPASSWORD,
   PATH_NOTFOUND,
+  PATH_PERMISSION,
 } from '../../constants/route';
 
 // Lazy load Components page
@@ -25,6 +26,7 @@ const ResetPassword = React.lazy(() =>
 const ChangePassword = React.lazy(() =>
   import('./pages/ChangePassword/ChangePassword')
 );
+const Permission = React.lazy(() => import('./pages/Permission/Permission'));
 
 // Main
 const User = (props) => {
@@ -38,6 +40,7 @@ const User = (props) => {
       <Route path={match.url + PATH_LOGIN} component={Login} />
       <Route path={match.url + PATH_REGISTER} component={Register} />
       <Route path={match.url + PATH_ACCOUNT} component={Account} />
+      <Route path={match.url + PATH_PERMISSION} component={Permission} />
       <Route
         path={match.url + PATH_CHANGEPASSWORD}
         component={ChangePassword}

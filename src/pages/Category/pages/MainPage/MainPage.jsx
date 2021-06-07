@@ -25,8 +25,10 @@ import {
   DELETE_FAILED,
   DELETE_CONFIRM,
   ERROR_GENERAL,
+  DONT_PERMISSION,
 } from 'constants/modal';
 import Images from 'constants/images';
+import { IS_REFRESH_TOKEN_FAIL } from 'constants/other';
 
 const MainPage = (props) => {
   const history = useHistory();
@@ -36,6 +38,7 @@ const MainPage = (props) => {
   const categoriesState = useSelector((state) => state.categories.data);
   const [categories, setCategories] = useState(categoriesState);
   const [categorySelected, setCategorySelected] = useState(null);
+  const [isCalledApi, setIsCalledApi] = useState(false);
 
   // Get cookie
   const userLogin = useSelector((state) => state.cookies.userLogin);
@@ -44,6 +47,7 @@ const MainPage = (props) => {
   const [apiCategoryGetAll] = useCategoryGetAll();
   useEffect(() => {
     const callApi = async () => {
+      setIsCalledApi(true);
       // Call API
       const response = await apiCategoryGetAll();
       if (response?.success) {
@@ -51,7 +55,7 @@ const MainPage = (props) => {
         setCategories(data);
       }
     };
-    if (categoriesState?.length === 0) {
+    if (categoriesState?.length === 0 && !isCalledApi) {
       callApi();
     } else {
       setCategories(categoriesState);
@@ -62,7 +66,11 @@ const MainPage = (props) => {
   // Hander Events
   const handleCategoryEditClick = (category) => {
     if (userLogin) {
-      history.push(PATH_CATEGORIES + category._id);
+      if (userLogin.permission !== 0) {
+        history.push(PATH_CATEGORIES + category._id);
+      } else {
+        showOk({ title: NOTIFICATION, content: DONT_PERMISSION });
+      }
     } else {
       history.push({
         pathname: PATH_USER_LOGIN,
@@ -73,11 +81,15 @@ const MainPage = (props) => {
 
   const handleCategoryRemoveClick = (category) => {
     if (userLogin) {
-      setCategorySelected(category);
-      showYesNoCancel({
-        title: CONFIRM,
-        content: DELETE_CONFIRM,
-      });
+      if (userLogin.permission !== 0) {
+        setCategorySelected(category);
+        showYesNoCancel({
+          title: CONFIRM,
+          content: DELETE_CONFIRM,
+        });
+      } else {
+        showOk({ title: NOTIFICATION, content: DONT_PERMISSION });
+      }
     } else {
       history.push({
         pathname: PATH_USER_LOGIN,
@@ -93,10 +105,10 @@ const MainPage = (props) => {
       // Call API
       const response = await apiCategoryDelete(categorySelected._id);
       if (!response.success) {
-        showOk({
-          title: NOTIFICATION,
-          content: response.message ? response.message : DELETE_FAILED,
-        });
+        if (response?.message !== IS_REFRESH_TOKEN_FAIL) {
+          const message = response.message ? response.message : DELETE_FAILED;
+          showOk({ title: NOTIFICATION, content: message });
+        }
       }
     } catch (error) {
       showOk({ title: NOTIFICATION, content: ERROR_GENERAL });

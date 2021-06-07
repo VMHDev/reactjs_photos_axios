@@ -24,6 +24,7 @@ import {
   PATH_USER_LOGIN,
   PATH_USER_ACCOUNT,
   PATH_USER_CHANGEPASSWORD,
+  PATH_USER_PERMISSION,
 } from 'constants/route';
 
 // Styles
@@ -71,6 +72,13 @@ const Header = (props) => {
                   Change password
                 </Link>
               </DropdownItem>
+              {userLogin.permission !== 0 && (
+                <DropdownItem>
+                  <Link to={PATH_USER_PERMISSION} className='header__link'>
+                    Permission
+                  </Link>
+                </DropdownItem>
+              )}
               <DropdownItem>
                 <Link to='' onClick={onLogoutClick} className='header__link'>
                   Logout
