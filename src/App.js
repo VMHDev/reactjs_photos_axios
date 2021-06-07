@@ -70,10 +70,10 @@ const App = () => {
         <div className='photo-app'>
           <Suspense
             fallback={
-              <div className='page-wrap d-flex flex-row align-items-center'>
+              <div className='photo-app__page-wrap d-flex flex-row align-items-center'>
                 <div className='container'>
                   <div className='row justify-content-center'>
-                    <Spinner style={{ width: '3rem', height: '3rem' }} />
+                    <Spinner className='photo-app__spinner' />
                   </div>
                 </div>
               </div>
