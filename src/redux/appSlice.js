@@ -3,12 +3,16 @@ import { createSlice } from '@reduxjs/toolkit';
 const app = createSlice({
   name: 'app',
   initialState: {
+    isPleaseLogin: false,
     isShowLoading: false,
     modalOk: {},
     modalOkCancel: {},
     modalYesNoCancel: {},
   },
   reducers: {
+    setPleaseLogin(state, action) {
+      state.isPleaseLogin = action.payload;
+    },
     showLoading(state, action) {
       state.isShowLoading = action.payload;
     },
@@ -26,6 +30,7 @@ const app = createSlice({
 
 const { reducer, actions } = app;
 export const {
+  setPleaseLogin,
   showLoading,
   showModalOk,
   showModalOkCancel,

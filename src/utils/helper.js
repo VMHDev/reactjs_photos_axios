@@ -48,12 +48,13 @@ const timeout = (ms) => {
 const refreshAccessTokenExpire = async () => {
   try {
     const token = store.getState().cookies?.token;
+
     if (token?.accessToken) {
       const decoded = jwt.decode(token?.accessToken);
       const timeExp = momenttimezone.unix(decoded.exp);
 
       if (!isExpire(timeExp)) {
-        return;
+        return true;
       }
       const response = await authApi.refreshToken({
         refreshToken: token?.refreshToken,
@@ -62,11 +63,13 @@ const refreshAccessTokenExpire = async () => {
       //Update state
       if (response?.data.success) {
         store.dispatch(updateToken({ token: response?.data.token }));
+        return true;
       }
     }
   } catch (error) {
     console.log('utils/helper/refreshAccessTokenExpire', error);
   }
+  return false;
 };
 
 export { addToLocalStorageArray, timeout, refreshAccessTokenExpire };

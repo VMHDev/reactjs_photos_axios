@@ -5,6 +5,8 @@ import { setPhoto, addPhoto, updatePhoto, removePhoto } from 'redux/photoSlice';
 import photoApi from 'api/photoApi';
 import { timeout, refreshAccessTokenExpire } from 'utils/helper';
 
+import { IS_REFRESH_TOKEN_FAIL } from 'constants/other';
+
 export const usePhotoGetAll = () => {
   const dispatch = useDispatch();
 
@@ -59,7 +61,9 @@ export const usePhotoGetByUser = () => {
   const callback = async (params) => {
     try {
       // Refresh token when expire
-      await trackPromise(refreshAccessTokenExpire());
+      if (!(await trackPromise(refreshAccessTokenExpire()))) {
+        return { success: false, message: IS_REFRESH_TOKEN_FAIL };
+      }
       // Call api
       const response = await trackPromise(photoApi.getByUser());
       // Update state
@@ -85,7 +89,9 @@ export const usePhotoAdd = () => {
   const callback = async (params) => {
     try {
       // Refresh token when expire
-      await trackPromise(refreshAccessTokenExpire());
+      if (!(await trackPromise(refreshAccessTokenExpire()))) {
+        return { success: false, message: IS_REFRESH_TOKEN_FAIL };
+      }
       // Call api
       const response = await trackPromise(photoApi.add(params));
       // Update state
@@ -112,7 +118,9 @@ export const usePhotoUpdate = () => {
   const callback = async (params) => {
     try {
       // Refresh token when expire
-      await trackPromise(refreshAccessTokenExpire());
+      if (!(await trackPromise(refreshAccessTokenExpire()))) {
+        return { success: false, message: IS_REFRESH_TOKEN_FAIL };
+      }
       // Call api
       const response = await trackPromise(photoApi.update(params));
       // Update state
@@ -139,7 +147,9 @@ export const usePhotoDelete = () => {
   const callback = async (params) => {
     try {
       // Refresh token when expire
-      await trackPromise(refreshAccessTokenExpire());
+      if (!(await trackPromise(refreshAccessTokenExpire()))) {
+        return { success: false, message: IS_REFRESH_TOKEN_FAIL };
+      }
       // Call api
       const response = await trackPromise(photoApi.delete(params));
       // Update state
