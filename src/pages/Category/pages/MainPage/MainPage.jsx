@@ -38,6 +38,7 @@ const MainPage = (props) => {
   const categoriesState = useSelector((state) => state.categories.data);
   const [categories, setCategories] = useState(categoriesState);
   const [categorySelected, setCategorySelected] = useState(null);
+  const [isCalledApi, setIsCalledApi] = useState(false);
 
   // Get cookie
   const userLogin = useSelector((state) => state.cookies.userLogin);
@@ -46,6 +47,7 @@ const MainPage = (props) => {
   const [apiCategoryGetAll] = useCategoryGetAll();
   useEffect(() => {
     const callApi = async () => {
+      setIsCalledApi(true);
       // Call API
       const response = await apiCategoryGetAll();
       if (response?.success) {
@@ -53,7 +55,7 @@ const MainPage = (props) => {
         setCategories(data);
       }
     };
-    if (categoriesState?.length === 0) {
+    if (categoriesState?.length === 0 && !isCalledApi) {
       callApi();
     } else {
       setCategories(categoriesState);

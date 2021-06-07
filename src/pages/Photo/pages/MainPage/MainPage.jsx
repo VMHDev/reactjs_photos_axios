@@ -14,6 +14,7 @@ import {
   usePhotoGetByUser,
   usePhotoPublic,
 } from 'hooks/axios/apiPhotos';
+import { useCategoryGetAll } from 'hooks/axios/apiCategories';
 
 import { PATH_PHOTOS, PATH_PHOTOS_ADD, PATH_USER_LOGIN } from 'constants/route';
 import {
@@ -34,15 +35,31 @@ const MainPage = (props) => {
   const photosState = useSelector((state) => state.photos.data);
   const [photos, setPhotos] = useState(photosState);
   const [photoSelected, setPhotoSelected] = useState(null);
+  const [isCalledApi, setIsCalledApi] = useState(false);
 
   // Get cookie
   const userLogin = useSelector((state) => state.cookies.userLogin);
+
+  // Get category when redux store missing
+  const categoriesState = useSelector((state) => state.categories.data);
+  const [apiCategoryGetAll] = useCategoryGetAll();
+  useEffect(() => {
+    const callApi = async () => {
+      if (categoriesState.length === 0) {
+        // Call API
+        await apiCategoryGetAll();
+      }
+    };
+    callApi();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Get photo by user
   const [apiPhotoGetByUser] = usePhotoGetByUser();
   const [apiPhotoPublic] = usePhotoPublic();
   useEffect(() => {
     const callApi = async () => {
+      setIsCalledApi(true);
       try {
         if (userLogin) {
           const response = await apiPhotoGetByUser(userLogin?._id);
@@ -75,7 +92,7 @@ const MainPage = (props) => {
         console.log(error);
       }
     };
-    if (photosState?.length === 0) {
+    if (photosState?.length === 0 && !isCalledApi) {
       callApi();
     } else {
       setPhotos(photosState);
@@ -165,11 +182,15 @@ const MainPage = (props) => {
             </Tooltip>
           </div>
 
-          <PhotoList
-            photoList={photos}
-            onPhotoEditClick={handlePhotoEditClick}
-            onPhotoRemoveClick={handlePhotoRemoveClick}
-          />
+          {photos.length !== 0 ? (
+            <PhotoList
+              photoList={photos}
+              onPhotoEditClick={handlePhotoEditClick}
+              onPhotoRemoveClick={handlePhotoRemoveClick}
+            />
+          ) : (
+            <h3>No data. Please add new photo</h3>
+          )}
         </Container>
       </div>
       <ModalYesNoCancel
