@@ -1,7 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
 import { Base64 } from 'js-base64';
 
 import { useRegister } from 'hooks/axios/apiUsers';
@@ -30,7 +29,6 @@ const Register = (props) => {
   const [apiRegister] = useRegister();
 
   const initialValues = {
-    id: uuidv4(),
     name: '',
     email: '',
     password: '',
