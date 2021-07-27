@@ -40,7 +40,7 @@
     > https://www.npmjs.com/package/js-base64
   - crypto-js
     > https://www.npmjs.com/package/crypto-js
-- Generate ID: uuid
+- Generate ID: uuid (Don't use)
   > https://www.npmjs.com/package/uuid
 - Random token: crypto-random-string
   > https://www.npmjs.com/package/crypto-random-string
@@ -55,17 +55,20 @@
   > https://react-redux.js.org/
 
 # Example .env
-```
-# PORT = REACT_APP_PORT
-PORT=4004
-REACT_APP_PORT=4004  
+  ```
+  PORT=3004
+  REACT_APP_PORT=3004  
+  REACT_APP_WEB_DOMAIN=http://localhost/
+  REACT_APP_TIME_ZONE=Etc/GMT+7
 
-REACT_APP_WEB_DOMAIN='http://localhost/'
+  REACT_APP_PASSWORD_RESET_TOKEN_EXPIRE=2
+  REACT_APP_PASSWORD_RESET_TOKEN_LENGTH=12
 
-# REACT_APP_PASSWORD_TOKEN_EXPIRE unit is minute
-REACT_APP_PASSWORD_TOKEN_EXPIRE=1
+  REACT_APP_PASS_PHRASE=photos_vmhdev_hack
+  REACT_APP_COOKIES_EXPIRE=1
+  REACT_APP_COOKIES_TOKEN_NAME=photos_token
+  REACT_APP_COOKIES_USERLOGIN_NAME=photos_user_login
 
-REACT_APP_PASSWORD_RESET_TOKEN_LENGTH=10
-
-REACT_APP_COOKIES_EXPIRE=3600
-```
+  REACT_APP_API_URL_DEV=http://localhost:3003/api
+  REACT_APP_API_URL_PRD=https://somedeployurl
+  ```

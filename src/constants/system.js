@@ -17,7 +17,7 @@ export const WEB_DOMAIN = process.env.REACT_APP_WEB_DOMAIN
   : 'http://localhost/';
 export const WEB_PORT = process.env.REACT_APP_PORT
   ? process.env.REACT_APP_PORT
-  : '4004';
+  : '3004';
 export const WEB_URL = WEB_DOMAIN + WEB_PORT;
 
 // Timezone
